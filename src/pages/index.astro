@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import More from "../components/More.tsx";
 ---
 
 <Layout title="Count More">
@@ -9,6 +10,6 @@ import Layout from "../layouts/Layout.astro";
       Are you a student? Find out where your vote counts more in 2024: your home
       state, or your school state.
     </h3>
-    <p>Coming soon!</p>
+    <More client:load />
   </main>
 </Layout>
