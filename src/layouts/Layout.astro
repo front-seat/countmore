@@ -1,0 +1,73 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="bg-darkest text-medium scroll-smooth">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XKE8361DZ1"
+    ></script>
+    <script>
+      // @ts-nocheck
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-XKE8361DZ1");
+    </script>
+
+    <!-- basic meta -->
+    <meta charset="UTF-8" />
+    <meta
+      name="description"
+      content="Are you a student? Find out where your vote counts more in 2024: your home state, or your school state."
+    />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+
+    <!-- Twitter card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- CONSIDER get a Twitter handle <meta name="twitter:site" content="@countMoreUS" /> -->
+    <meta name="twitter:title" content="Count More" />
+    <meta
+      name="twitter:description"
+      content="Are you a student? Find out where your vote counts more in 2024: your home state, or your school state."
+    />
+    <!-- <meta
+      name="twitter:image"
+      content="https://countmore.us/img/TODO-800x418.png"
+    /> -->
+
+    <!-- Facebook (open graph) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Count More" />
+    <meta
+      property="og:description"
+      content="Are you a student? Find out where your vote counts more in 2024: your home state, or your school state."
+    />
+    <!-- <meta
+      property="og:image"
+      content="https://countmore.us/img/TODO-1200x630.png"
+    /> -->
+    <meta property="og:url" content="https://countmore.us/" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+<style is:global>
+  html {
+    /* disable font antialiasing */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+</style>
