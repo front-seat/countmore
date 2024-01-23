@@ -82,11 +82,11 @@ type StateSelection = "home" | "school" | "tossup";
 const SELECTION_DESCRIPTION: {
   [sel in StateSelection]: (homeSt: string, schoolSt: string) => string;
 } = {
-  home: (homeSt: string, schoolSt: string) =>
+  home: (homeSt: string, __: string) =>
     `You should vote in your home state, ${US_STATES[homeSt]}.`,
-  school: (homeSt: string, schoolSt: string) =>
+  school: (_: string, schoolSt: string) =>
     `You should vote in your school state, ${US_STATES[schoolSt]}.`,
-  tossup: (homeSt: string, schoolSt: string) =>
+  tossup: (_: string, __: string) =>
     "It's a tossup where you vote. Take your pick.",
 };
 
@@ -102,6 +102,10 @@ const stateSelection = (homeSt: string, schoolSt: string): StateSelection => {
     return "tossup";
   }
 };
+
+/** Return the vote.gov URL for a state */
+const voteGovUrl = (st: string): string =>
+  `https://vote.gov/register/${st.toLowerCase()}/`;
 
 /** A React component with two dropdowns containing states; shows which one to use. */
 const More: React.FC = () => {
@@ -158,6 +162,36 @@ const More: React.FC = () => {
           ? SELECTION_DESCRIPTION[selection](homeSt, schoolSt)
           : "(choose your states)"}
       </p>
+
+      {/* Link (or links) to vote.gov */}
+      <div className="flex flex-col text-2x font-normal pt-8 space-y-8">
+        {homeSt && schoolSt && selection !== "school" && (
+          <p>
+            <a
+              className="text-blue-500 hover:text-blue-700 underline"
+              href={voteGovUrl(homeSt)}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Register to vote or check your registration status in{" "}
+              {US_STATES[homeSt]}
+            </a>
+          </p>
+        )}
+        {homeSt && schoolSt && selection !== "home" && (
+          <p>
+            <a
+              className="text-blue-500 hover:text-blue-700 underline"
+              href={voteGovUrl(schoolSt)}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Register to vote or check your registration status in{" "}
+              {US_STATES[schoolSt]}
+            </a>
+          </p>
+        )}
+      </div>
     </div>
   );
 };
