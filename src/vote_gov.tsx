@@ -10,14 +10,16 @@ export interface StateVotingInfo {
     description?: string;
   };
   mail?: {
-    url?: string;
-    deadline: number; // 0 means must be *received by* election day; anything else is postmarked
+    url: string;
+    deadline: number;
+    timeframe: "postmarked" | "received";
     description?: string;
   };
-  in_person?: {
-    url?: string;
+  inPerson?: {
+    url: string;
     deadline: number;
     description?: string;
+    wrinkle?: "early-voting-deadline";
   };
   confirm?: {
     url: string;
@@ -42,8 +44,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.sos.alabama.gov/alabama-votes/voter/register-to-vote?ref=countmoreus_en",
       deadline: 15,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.sos.alabama.gov/alabama-votes/voter/register-to-vote?ref=countmoreus_en",
       deadline: 15,
     },
@@ -63,8 +66,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.elections.alaska.gov/Core/voterregistration.php?ref=countmoreus_en",
       deadline: 30,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.elections.alaska.gov/Core/voterregistration.php?ref=countmoreus_en",
       deadline: 30,
     },
@@ -84,8 +88,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://azsos.gov/elections/voting-election/register-vote-or-update-your-current-voter-information?ref=countmoreus_en",
       deadline: 29,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://azsos.gov/elections/voting-election/register-vote-or-update-your-current-voter-information?ref=countmoreus_en",
       deadline: 29,
     },
@@ -99,13 +104,13 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     scrapeUrl: "https://vote.gov/register/ar/",
     hasRegistration: true,
     mail: {
-      deadline: 30,
-    },
-    in_person: {
-      deadline: 30,
-    },
-    fallback: {
       url: "https://www.sos.arkansas.gov/elections/voter-information/?ref=countmoreus_en",
+      deadline: 30,
+      timeframe: "postmarked",
+    },
+    inPerson: {
+      url: "https://www.sos.arkansas.gov/elections/voter-information/?ref=countmoreus_en",
+      deadline: 30,
     },
     confirm: {
       url: "https://www.voterview.ar-nova.org/voterview?ref=countmoreus_en",
@@ -123,8 +128,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.sos.ca.gov/elections/voting-resources/voting-california/registering-vote?ref=countmoreus_en",
       deadline: 15,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.sos.ca.gov/elections/voting-resources/voting-california/registering-vote?ref=countmoreus_en",
       deadline: 0,
     },
@@ -144,8 +150,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.coloradosos.gov/voter/pages/pub/home.xhtml?ref=countmoreus_en",
       deadline: 8,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.coloradosos.gov/voter/pages/pub/home.xhtml?ref=countmoreus_en",
       deadline: 0,
     },
@@ -165,8 +172,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://portal.ct.gov/SOTS/Election-Services/Voter-Information/Voter-Fact-Sheet?ref=countmoreus_en",
       deadline: 7,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://portal.ct.gov/SOTS/Election-Services/Voter-Information/Voter-Fact-Sheet?ref=countmoreus_en",
       deadline: 0,
     },
@@ -186,8 +194,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://elections.delaware.gov/voter/votereg.shtml?ref=countmoreus_en",
       deadline: 24,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://elections.delaware.gov/voter/votereg.shtml?ref=countmoreus_en",
       deadline: 24,
     },
@@ -207,8 +216,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://registertovoteflorida.gov/home?ref=countmoreus_en",
       deadline: 29,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://registertovoteflorida.gov/home?ref=countmoreus_en",
       deadline: 29,
     },
@@ -228,8 +238,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://sos.ga.gov/elections-division-georgia-secretary-states-office?ref=countmoreus_en",
       deadline: 29,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://sos.ga.gov/elections-division-georgia-secretary-states-office?ref=countmoreus_en",
       deadline: 29,
     },
@@ -249,8 +260,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://elections.hawaii.gov/voters/registration/?ref=countmoreus_en",
       deadline: 8,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://elections.hawaii.gov/voters/registration/?ref=countmoreus_en",
       deadline: 0,
     },
@@ -270,8 +282,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://idahovotes.gov/voting/?ref=countmoreus_en",
       deadline: 25,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://idahovotes.gov/voting/?ref=countmoreus_en",
       deadline: 0,
     },
@@ -291,8 +304,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.elections.il.gov/Default.aspx?ref=countmoreus_en",
       deadline: 28,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.elections.il.gov/Default.aspx?ref=countmoreus_en",
       deadline: 0,
     },
@@ -312,8 +326,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.in.gov/sos/elections/2403.htm?ref=countmoreus_en",
       deadline: 29,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.in.gov/sos/elections/2403.htm?ref=countmoreus_en",
       deadline: 29,
     },
@@ -333,8 +348,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://sos.iowa.gov/elections/voterinformation/voterregistration.html?ref=countmoreus_en",
       deadline: 15,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://sos.iowa.gov/elections/voterinformation/voterregistration.html?ref=countmoreus_en",
       deadline: 0,
     },
@@ -354,8 +370,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://sos.ks.gov/elections/voter-information.html?ref=countmoreus_en",
       deadline: 21,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://sos.ks.gov/elections/voter-information.html?ref=countmoreus_en",
       deadline: 21,
     },
@@ -375,8 +392,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://elect.ky.gov/Resources/Pages/Registration.aspx?ref=countmoreus_en",
       deadline: 29,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://elect.ky.gov/Resources/Pages/Registration.aspx?ref=countmoreus_en",
       deadline: 29,
     },
@@ -396,8 +414,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.sos.la.gov/ElectionsAndVoting/RegisterToVote/Pages/default.aspx?ref=countmoreus_en",
       deadline: 30,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.sos.la.gov/ElectionsAndVoting/RegisterToVote/Pages/default.aspx?ref=countmoreus_en",
       deadline: 30,
     },
@@ -411,13 +430,13 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     scrapeUrl: "https://vote.gov/register/me/",
     hasRegistration: true,
     mail: {
-      deadline: 21,
-    },
-    in_person: {
-      deadline: 0,
-    },
-    fallback: {
       url: "https://www.maine.gov/sos/cec/elec/voter-info/voterguide.html?ref=countmoreus_en",
+      deadline: 21,
+      timeframe: "received",
+    },
+    inPerson: {
+      url: "https://www.maine.gov/sos/cec/elec/voter-info/voterguide.html?ref=countmoreus_en",
+      deadline: 0,
     },
     confirm: {
       url: "https://www.maine.gov/sos/cec/elec/data/index.html?ref=countmoreus_en",
@@ -435,8 +454,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.elections.maryland.gov/voter_registration/application.html?ref=countmoreus_en",
       deadline: 21,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.elections.maryland.gov/voter_registration/application.html?ref=countmoreus_en",
       deadline: 0,
     },
@@ -456,8 +476,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.sec.state.ma.us/divisions/elections/voter-resources/registering-to-vote.htm?ref=countmoreus_en",
       deadline: 10,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.sec.state.ma.us/divisions/elections/voter-resources/registering-to-vote.htm?ref=countmoreus_en",
       deadline: 10,
     },
@@ -477,8 +498,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://mvic.sos.state.mi.us/?ref=countmoreus_en",
       deadline: 15,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://mvic.sos.state.mi.us/?ref=countmoreus_en",
       deadline: 0,
     },
@@ -498,8 +520,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.sos.state.mn.us/elections-voting/register-to-vote/?ref=countmoreus_en",
       deadline: 21,
+      timeframe: "received",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.sos.state.mn.us/elections-voting/register-to-vote/?ref=countmoreus_en",
       deadline: 0,
     },
@@ -513,13 +536,13 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     scrapeUrl: "https://vote.gov/register/ms/",
     hasRegistration: true,
     mail: {
-      deadline: 30,
-    },
-    in_person: {
-      deadline: 30,
-    },
-    fallback: {
       url: "https://www.sos.ms.gov/elections-voting/voter-registration-information?ref=countmoreus_en",
+      deadline: 30,
+      timeframe: "postmarked",
+    },
+    inPerson: {
+      url: "https://www.sos.ms.gov/elections-voting/voter-registration-information?ref=countmoreus_en",
+      deadline: 30,
     },
     confirm: {
       url: "https://www.msegov.com/sos/voter_registration/amiregistered/Search?ref=countmoreus_en",
@@ -537,8 +560,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.sos.mo.gov/elections/goVoteMissouri/register?ref=countmoreus_en",
       deadline: 27,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.sos.mo.gov/elections/goVoteMissouri/register?ref=countmoreus_en",
       deadline: 27,
     },
@@ -552,13 +576,13 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     scrapeUrl: "https://vote.gov/register/mt/",
     hasRegistration: true,
     mail: {
-      deadline: 30,
-    },
-    in_person: {
-      deadline: 0,
-    },
-    fallback: {
       url: "https://sosmt.gov/elections/vote/?ref=countmoreus_en",
+      deadline: 30,
+      timeframe: "postmarked",
+    },
+    inPerson: {
+      url: "https://sosmt.gov/elections/vote/?ref=countmoreus_en",
+      deadline: 0,
     },
     confirm: {
       url: "https://prodvoterportal.mt.gov/WhereToVote.aspx?ref=countmoreus_en",
@@ -576,8 +600,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://sos.nebraska.gov/elections/voter-forms?ref=countmoreus_en",
       deadline: 18,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://sos.nebraska.gov/elections/voter-forms?ref=countmoreus_en",
       deadline: 11,
     },
@@ -597,8 +622,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.nvsos.gov/sos/elections/voters/registering-to-vote?ref=countmoreus_en",
       deadline: 28,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.nvsos.gov/sos/elections/voters/registering-to-vote?ref=countmoreus_en",
       deadline: 0,
     },
@@ -612,13 +638,13 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     scrapeUrl: "https://vote.gov/register/nh/",
     hasRegistration: true,
     mail: {
-      deadline: 13,
-    },
-    in_person: {
-      deadline: 0,
-    },
-    fallback: {
       url: "https://www.sos.nh.gov/elections/voters/register-vote?ref=countmoreus_en",
+      deadline: 13,
+      timeframe: "received",
+    },
+    inPerson: {
+      url: "https://www.sos.nh.gov/elections/voters/register-vote?ref=countmoreus_en",
+      deadline: 0,
     },
     confirm: {
       url: "https://app.sos.nh.gov/voterinformation?ref=countmoreus_en",
@@ -636,8 +662,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://nj.gov/state/elections/voter-registration.shtml?ref=countmoreus_en",
       deadline: 21,
+      timeframe: "received",
     },
-    in_person: {
+    inPerson: {
       url: "https://nj.gov/state/elections/voter-registration.shtml?ref=countmoreus_en",
       deadline: 21,
     },
@@ -657,8 +684,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.sos.state.nm.us/voting-and-elections/voter-information/voter-registration-information/?ref=countmoreus_en",
       deadline: 28,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.sos.state.nm.us/voting-and-elections/voter-information/voter-registration-information/?ref=countmoreus_en",
       deadline: 28,
     },
@@ -678,8 +706,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.elections.ny.gov/votingregister.html?ref=countmoreus_en",
       deadline: 10,
+      timeframe: "received",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.elections.ny.gov/votingregister.html?ref=countmoreus_en",
       deadline: 25,
     },
@@ -699,10 +728,12 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.ncsbe.gov/registering/how-register?ref=countmoreus_en",
       deadline: 25,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.ncsbe.gov/registering/how-register?ref=countmoreus_en",
       deadline: 0,
+      wrinkle: "early-voting-deadline",
     },
     confirm: {
       url: "https://vt.ncsbe.gov/RegLkup/?ref=countmoreus_en",
@@ -729,8 +760,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://olvr.ohiosos.gov/?ref=countmoreus_en",
       deadline: 30,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://olvr.ohiosos.gov/?ref=countmoreus_en",
       deadline: 30,
     },
@@ -744,13 +776,13 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     scrapeUrl: "https://vote.gov/register/ok/",
     hasRegistration: true,
     mail: {
-      deadline: 25,
-    },
-    in_person: {
-      deadline: 25,
-    },
-    fallback: {
       url: "https://oklahoma.gov/elections/voter-registration/register-to-vote.html?ref=countmoreus_en",
+      deadline: 25,
+      timeframe: "postmarked",
+    },
+    inPerson: {
+      url: "https://oklahoma.gov/elections/voter-registration/register-to-vote.html?ref=countmoreus_en",
+      deadline: 25,
     },
     confirm: {
       url: "https://okvoterportal.okelections.us/?ref=countmoreus_en",
@@ -768,8 +800,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://sos.oregon.gov/voting/Pages/registration.aspx?ref=countmoreus_en",
       deadline: 21,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://sos.oregon.gov/voting/Pages/registration.aspx?ref=countmoreus_en",
       deadline: 21,
     },
@@ -789,8 +822,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.pa.gov/guides/voting-and-elections/#RegisteringtoVote?ref=countmoreus_en",
       deadline: 15,
+      timeframe: "received",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.pa.gov/guides/voting-and-elections/#RegisteringtoVote?ref=countmoreus_en",
       deadline: 15,
     },
@@ -810,8 +844,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://vote.sos.ri.gov/Voter/RegisterToVote?ref=countmoreus_en",
       deadline: 30,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://vote.sos.ri.gov/Voter/RegisterToVote?ref=countmoreus_en",
       deadline: 30,
     },
@@ -831,8 +866,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://scvotes.gov/voters/register-to-vote/?ref=countmoreus_en",
       deadline: 30,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://scvotes.gov/voters/register-to-vote/?ref=countmoreus_en",
       deadline: 30,
     },
@@ -846,13 +882,13 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     scrapeUrl: "https://vote.gov/register/sd/",
     hasRegistration: true,
     mail: {
-      deadline: 15,
-    },
-    in_person: {
-      deadline: 15,
-    },
-    fallback: {
       url: "https://sdsos.gov/elections-voting/voting/register-to-vote/default.aspx?ref=countmoreus_en",
+      deadline: 15,
+      timeframe: "received",
+    },
+    inPerson: {
+      url: "https://sdsos.gov/elections-voting/voting/register-to-vote/default.aspx?ref=countmoreus_en",
+      deadline: 15,
     },
     confirm: {
       url: "https://vip.sdsos.gov/VIPLogin.aspx?ref=countmoreus_en",
@@ -870,8 +906,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://sos.tn.gov/products/elections/register-vote?ref=countmoreus_en",
       deadline: 30,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://sos.tn.gov/products/elections/register-vote?ref=countmoreus_en",
       deadline: 30,
     },
@@ -885,13 +922,13 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     scrapeUrl: "https://vote.gov/register/tx/",
     hasRegistration: true,
     mail: {
-      deadline: 30,
-    },
-    in_person: {
-      deadline: 30,
-    },
-    fallback: {
       url: "https://www.votetexas.gov/register-to-vote/index.html?ref=countmoreus_en",
+      deadline: 30,
+      timeframe: "postmarked",
+    },
+    inPerson: {
+      url: "https://www.votetexas.gov/register-to-vote/index.html?ref=countmoreus_en",
+      deadline: 30,
     },
     confirm: {
       url: "https://teamrv-mvp.sos.texas.gov/MVP/mvp.do?ref=countmoreus_en",
@@ -909,8 +946,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://voteinfo.utah.gov/?ref=countmoreus_en",
       deadline: 11,
+      timeframe: "received",
     },
-    in_person: {
+    inPerson: {
       url: "https://voteinfo.utah.gov/?ref=countmoreus_en",
       deadline: 0,
     },
@@ -930,8 +968,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://sos.vermont.gov/elections/voters/registration/?ref=countmoreus_en",
       deadline: 0,
+      timeframe: "received",
     },
-    in_person: {
+    inPerson: {
       url: "https://sos.vermont.gov/elections/voters/registration/?ref=countmoreus_en",
       deadline: 0,
     },
@@ -951,8 +990,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.elections.virginia.gov/registration/how-to-register/?ref=countmoreus_en",
       deadline: 22,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.elections.virginia.gov/registration/how-to-register/?ref=countmoreus_en",
       deadline: 22,
     },
@@ -972,8 +1012,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://www.sos.wa.gov/elections/voters/?ref=countmoreus_en",
       deadline: 8,
+      timeframe: "received",
     },
-    in_person: {
+    inPerson: {
       url: "https://www.sos.wa.gov/elections/voters/?ref=countmoreus_en",
       deadline: 0,
     },
@@ -993,8 +1034,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://ovr.sos.wv.gov/Register/Landing?ref=countmoreus_en",
       deadline: 21,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://ovr.sos.wv.gov/Register/Landing?ref=countmoreus_en",
       deadline: 21,
     },
@@ -1014,8 +1056,9 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     mail: {
       url: "https://elections.wi.gov/Register?ref=countmoreus_en",
       deadline: 20,
+      timeframe: "postmarked",
     },
-    in_person: {
+    inPerson: {
       url: "https://elections.wi.gov/Register?ref=countmoreus_en",
       deadline: 0,
     },
@@ -1029,13 +1072,13 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     scrapeUrl: "https://vote.gov/register/wy/",
     hasRegistration: true,
     mail: {
-      deadline: 14,
-    },
-    in_person: {
-      deadline: 0,
-    },
-    fallback: {
       url: "https://sos.wyo.gov/Elections/State/RegisteringToVote.aspx?ref=countmoreus_en",
+      deadline: 14,
+      timeframe: "received",
+    },
+    inPerson: {
+      url: "https://sos.wyo.gov/Elections/State/RegisteringToVote.aspx?ref=countmoreus_en",
+      deadline: 0,
     },
     confirm: {
       url: "https://sos.wyo.gov/Elections/Docs/WYCountyClerks.pdf?ref=countmoreus_en",
