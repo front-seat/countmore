@@ -115,45 +115,53 @@ const More: React.FC = () => {
   const selection = stateSelection(homeSt, schoolSt);
 
   return (
-    <div className="flex flex-col space-y-12 pt-12">
-      <div className="flex flex-row space-x-16">
-        {/* Dropdown for home state */}
-        <div className="flex flex-col space-y-4">
-          <label className="text-3xl font-bold" htmlFor="home-state">
-            Home state
-          </label>
-          <select
-            id="home-state"
-            value={homeSt}
-            onChange={(e) => setHomeSt(e.target.value)}
-          >
-            <option value="">Select your home state</option>
-            {Object.entries(US_STATES).map(([st, name]) => (
-              <option key={st} value={st}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="flex flex-col space-y-12">
+      <h2 className="text-3xl font-medium">
+        Enter your home state and school state to learn where your vote counts
+        more:
+      </h2>
 
-        {/* Dropdown for school state */}
-        <div className="flex flex-col space-y-4">
-          <label className="text-3xl font-bold" htmlFor="school-state">
-            School state
-          </label>
-          <select
-            id="school-state"
-            value={schoolSt}
-            onChange={(e) => setSchoolSt(e.target.value)}
-          >
-            <option value="">Select your school state</option>
-            {Object.entries(US_STATES).map(([st, name]) => (
-              <option key={st} value={st}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </div>
+      {/* Dropdown for home state */}
+      <div className="flex flex-row space-x-4">
+        <label className="text-normal font-medium w-[40%]" htmlFor="home-state">
+          Your home state:
+        </label>
+        <select
+          id="home-state"
+          className="flex-grow"
+          value={homeSt}
+          onChange={(e) => setHomeSt(e.target.value)}
+        >
+          <option value="">Select a state</option>
+          {Object.entries(US_STATES).map(([st, name]) => (
+            <option key={st} value={st}>
+              {name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Dropdown for school state */}
+      <div className="flex flex-row space-x-4">
+        <label
+          className="text-normal font-medium w-[40%]"
+          htmlFor="school-state"
+        >
+          Your school state:
+        </label>
+        <select
+          id="school-state"
+          className="flex-grow"
+          value={schoolSt}
+          onChange={(e) => setSchoolSt(e.target.value)}
+        >
+          <option value="">Select a state</option>
+          {Object.entries(US_STATES).map(([st, name]) => (
+            <option key={st} value={st}>
+              {name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Show the result */}

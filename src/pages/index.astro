@@ -4,12 +4,23 @@ import More from "../components/More.tsx";
 ---
 
 <Layout title="Count More">
-  <main class="max-w-[768px] mx-6 md:mx-auto">
-    <h1 class="text-6xl font-bold pb-4 pt-12">Count More</h1>
-    <h3 class="text-2xl font-medium pb-4">
-      Are you a student? Find out where your vote counts more in 2024: your home
-      state, or your school state.
-    </h3>
-    <More client:load />
+  <main class="max-w-[768px] mx-6 md:mx-auto flex flex-row flex-wrap pt-12">
+    <div class="w-full md:w-1/3 flex-shrink flex flex-col">
+      <h1 class="text-7xl font-bold pb-4 pt-12">Count More</h1>
+      <h3 class="text-2xl font-light pb-4">
+        In the 2024 presidental election, every vote counts &mdash; but not all
+        votes count the same. Find out where your vote counts more.
+      </h3>
+      <div>
+        <button class="bg-black py-4 px-8 text-white text-xl font-bold"
+          >Share</button
+        >
+      </div>
+    </div>
+    <div class="w-full md:w-2/3">
+      <div class="border-4 mt-8 md:m-4 border-black p-12">
+        <More client:load />
+      </div>
+    </div>
   </main>
 </Layout>
