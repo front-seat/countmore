@@ -128,7 +128,7 @@ const More: React.FC = () => {
         </label>
         <select
           id="home-state"
-          className="flex-grow"
+          className="flex-grow appearance-none border-2 rounded-none px-2"
           value={homeSt}
           onChange={(e) => setHomeSt(e.target.value)}
         >
@@ -166,9 +166,9 @@ const More: React.FC = () => {
 
       {/* Show the result */}
       <p className="text-2x font-bold">
-        {homeSt && schoolSt
-          ? SELECTION_DESCRIPTION[selection](homeSt, schoolSt)
-          : "(choose your states)"}
+        {homeSt &&
+          schoolSt &&
+          SELECTION_DESCRIPTION[selection](homeSt, schoolSt)}
       </p>
 
       {/* Link (or links) to vote.gov */}

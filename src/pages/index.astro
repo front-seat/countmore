@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import More from "../components/More.tsx";
+import ShareButton from "../components/ShareButton.tsx";
 ---
 
 <Layout title="Count More">
@@ -12,9 +13,7 @@ import More from "../components/More.tsx";
         votes count the same. Find out where your vote counts more.
       </h3>
       <div>
-        <button class="bg-black py-4 px-8 text-white text-xl font-bold"
-          >Share</button
-        >
+        <ShareButton client:load />
       </div>
     </div>
     <div class="w-full md:w-2/3">
