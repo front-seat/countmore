@@ -128,7 +128,7 @@ const More: React.FC = () => {
         </label>
         <select
           id="home-state"
-          className="flex-grow appearance-none border-2 rounded-none px-2"
+          className="flex-grow"
           value={homeSt}
           onChange={(e) => setHomeSt(e.target.value)}
         >
