@@ -93,14 +93,13 @@ const SELECTION_DESCRIPTION: {
       </div>
       <p className="py-8">Put some explanatory text here.</p>
       {bestRegistrationUrl(homeSt) && (
-        <button
-          className="bg-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
-          onClick={() => {
-            window.open(bestRegistrationUrl(homeSt)!, "_blank");
-          }}
+        <a
+          className="inline-block g-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
+          href={bestRegistrationUrl(homeSt)!}
+          target="_blank"
         >
           Register to vote
-        </button>
+        </a>
       )}
     </div>
   ),
@@ -112,14 +111,13 @@ const SELECTION_DESCRIPTION: {
       </div>
       <p className="py-8">Put some explanatory text here.</p>
       {bestRegistrationUrl(schoolSt) && (
-        <button
-          className="bg-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
-          onClick={() => {
-            window.open(bestRegistrationUrl(schoolSt)!, "_blank");
-          }}
+        <a
+          className="inline-block bg-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
+          href={bestRegistrationUrl(schoolSt)!}
+          target="_blank"
         >
           Register to vote
-        </button>
+        </a>
       )}
     </div>
   ),
@@ -132,24 +130,22 @@ const SELECTION_DESCRIPTION: {
       </div>
       <p className="py-8">Put some explanatory text here.</p>
       {bestRegistrationUrl(homeSt) && (
-        <button
-          className="bg-black mb-8 py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
-          onClick={() => {
-            window.open(bestRegistrationUrl(homeSt)!, "_blank");
-          }}
+        <a
+          className="inline-block bg-black mb-8 py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
+          href={bestRegistrationUrl(homeSt)!}
+          target="_blank"
         >
           Register to vote in {US_STATES[homeSt]}
-        </button>
+        </a>
       )}{" "}
       {bestRegistrationUrl(schoolSt) && (
-        <button
-          className="bg-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
-          onClick={() => {
-            window.open(bestRegistrationUrl(schoolSt)!, "_blank");
-          }}
+        <a
+          className="inline-block bg-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
+          href={bestRegistrationUrl(schoolSt)!}
+          target="_blank"
         >
           Register to vote in {US_STATES[schoolSt]}
-        </button>
+        </a>
       )}
     </div>
   ),
