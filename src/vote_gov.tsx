@@ -1096,3 +1096,27 @@ export const votingInfoForSt = (st: string): StateVotingInfo => {
   }
   return data;
 };
+
+/** Return the best website to visit for registration, if available. */
+export const bestRegistrationUrl = (st: string): string | null => {
+  const data = votingInfoForSt(st);
+  if (!data.hasRegistration) {
+    return null;
+  }
+  if (data.online) {
+    return data.online.url;
+  }
+  if (data.mail) {
+    return data.mail.url;
+  }
+  if (data.inPerson) {
+    return data.inPerson.url;
+  }
+  if (data.fallback) {
+    return data.fallback.url;
+  }
+  if (data.confirm) {
+    return data.confirm.url;
+  }
+  return null;
+};

@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import type { ReactNode } from "react";
+
+import { bestRegistrationUrl } from "../vote_gov";
 
 /** The fifty nifty United States (from the original thirteen colonies!) */
 const US_STATES: { [st: string]: string } = {
@@ -76,18 +79,80 @@ const POWER_RANKINGS: { [st: string]: number } = {
 const powerRanking = (st: string): number => POWER_RANKINGS[st] || 0;
 
 /** Which state is most impactful to vote in for the 2024 presidential election? */
-type StateSelection = "home" | "school" | "tossup";
+type StateSelection = "home" | "school" | "toss-up";
 
 /** Selection description */
 const SELECTION_DESCRIPTION: {
-  [sel in StateSelection]: (homeSt: string, schoolSt: string) => string;
+  [sel in StateSelection]: (homeSt: string, schoolSt: string) => ReactNode;
 } = {
-  home: (homeSt: string, __: string) =>
-    `You should vote in your home state, ${US_STATES[homeSt]}.`,
-  school: (_: string, schoolSt: string) =>
-    `You should vote in your school state, ${US_STATES[schoolSt]}.`,
-  tossup: (_: string, __: string) =>
-    "It's a tossup where you vote. Take your pick.",
+  home: (homeSt: string, __: string) => (
+    <div>
+      <div className="text-4xl font-black">
+        Your vote counts more in{" "}
+        <span className="text-red-500">{US_STATES[homeSt]}</span>.
+      </div>
+      <p className="py-8">Put some explanatory text here.</p>
+      {bestRegistrationUrl(homeSt) && (
+        <button
+          className="bg-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
+          onClick={() => {
+            window.open(bestRegistrationUrl(homeSt)!, "_blank");
+          }}
+        >
+          Register to vote
+        </button>
+      )}
+    </div>
+  ),
+  school: (_: string, schoolSt: string) => (
+    <div>
+      <div className="text-4xl font-black">
+        You vote counts more in{" "}
+        <span className="text-red-500">{US_STATES[schoolSt]}</span>.
+      </div>
+      <p className="py-8">Put some explanatory text here.</p>
+      {bestRegistrationUrl(schoolSt) && (
+        <button
+          className="bg-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
+          onClick={() => {
+            window.open(bestRegistrationUrl(schoolSt)!, "_blank");
+          }}
+        >
+          Register to vote
+        </button>
+      )}
+    </div>
+  ),
+  "toss-up": (homeSt: string, schoolSt: string) => (
+    <div>
+      <div className="text-4xl font-black">
+        Your vote counts the same in{" "}
+        <span className="text-red-500">{US_STATES[homeSt]}</span> and{" "}
+        <span className="text-red-500">{US_STATES[schoolSt]}</span>.
+      </div>
+      <p className="py-8">Put some explanatory text here.</p>
+      {bestRegistrationUrl(homeSt) && (
+        <button
+          className="bg-black mb-8 py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
+          onClick={() => {
+            window.open(bestRegistrationUrl(homeSt)!, "_blank");
+          }}
+        >
+          Register to vote in {US_STATES[homeSt]}
+        </button>
+      )}{" "}
+      {bestRegistrationUrl(schoolSt) && (
+        <button
+          className="bg-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
+          onClick={() => {
+            window.open(bestRegistrationUrl(schoolSt)!, "_blank");
+          }}
+        >
+          Register to vote in {US_STATES[schoolSt]}
+        </button>
+      )}
+    </div>
+  ),
 };
 
 /** Return the state selection for a state */
@@ -99,7 +164,7 @@ const stateSelection = (homeSt: string, schoolSt: string): StateSelection => {
   } else if (homeRank < schoolRank) {
     return "school";
   } else {
-    return "tossup";
+    return "toss-up";
   }
 };
 
@@ -113,6 +178,19 @@ const More: React.FC = () => {
   const [schoolSt, setSchoolSt] = useState<string>("");
 
   const selection = stateSelection(homeSt, schoolSt);
+
+  // Send a google analytics event when the selection changes
+  useEffect(() => {
+    if (homeSt && schoolSt) {
+      window.gtag("event", "show_me", {
+        event_category: "show_me",
+        event_label: "Show me where to vote",
+        home_state: homeSt,
+        school_state: schoolSt,
+        selection,
+      });
+    }
+  }, [homeSt, schoolSt]);
 
   return (
     <div className="flex flex-col space-y-12">
@@ -165,40 +243,10 @@ const More: React.FC = () => {
       </div>
 
       {/* Show the result */}
-      <p className="text-2x font-bold">
+      <div>
         {homeSt &&
           schoolSt &&
           SELECTION_DESCRIPTION[selection](homeSt, schoolSt)}
-      </p>
-
-      {/* Link (or links) to vote.gov */}
-      <div className="flex flex-col text-2x font-normal pt-8 space-y-8">
-        {homeSt && schoolSt && selection !== "school" && (
-          <p>
-            <a
-              className="text-blue-500 hover:text-blue-700 underline"
-              href={voteGovUrl(homeSt)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Register to vote or check your registration status in{" "}
-              {US_STATES[homeSt]}
-            </a>
-          </p>
-        )}
-        {homeSt && schoolSt && selection !== "home" && (
-          <p>
-            <a
-              className="text-blue-500 hover:text-blue-700 underline"
-              href={voteGovUrl(schoolSt)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Register to vote or check your registration status in{" "}
-              {US_STATES[schoolSt]}
-            </a>
-          </p>
-        )}
       </div>
     </div>
   );
