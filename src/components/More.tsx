@@ -88,9 +88,9 @@ const SELECTION_DESCRIPTION: {
 } = {
   home: (homeSt: string, __: string) => (
     <div>
-      <div className="text-4xl font-black">
+      <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
         Your vote counts more in{" "}
-        <span className="text-red-500">{US_STATES[homeSt]}</span>.
+        <span className="text-point">{US_STATES[homeSt]}</span>.
       </div>
       <p className="py-8">Put some explanatory text here.</p>
       {bestRegistrationUrl(homeSt) && (
@@ -106,9 +106,9 @@ const SELECTION_DESCRIPTION: {
   ),
   school: (_: string, schoolSt: string) => (
     <div>
-      <div className="text-4xl font-black">
-        You vote counts more in{" "}
-        <span className="text-red-500">{US_STATES[schoolSt]}</span>.
+      <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
+        Your vote counts more in{" "}
+        <span className="text-point">{US_STATES[schoolSt]}</span>.
       </div>
       <p className="py-8">Put some explanatory text here.</p>
       {bestRegistrationUrl(schoolSt) && (
@@ -124,10 +124,10 @@ const SELECTION_DESCRIPTION: {
   ),
   "toss-up": (homeSt: string, schoolSt: string) => (
     <div>
-      <div className="text-4xl font-black">
+      <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
         Your vote counts the same in{" "}
-        <span className="text-red-500">{US_STATES[homeSt]}</span> and{" "}
-        <span className="text-red-500">{US_STATES[schoolSt]}</span>.
+        <span className="text-point">{US_STATES[homeSt]}</span> and{" "}
+        <span className="text-point">{US_STATES[schoolSt]}</span>.
       </div>
       <p className="py-8">Put some explanatory text here.</p>
       {bestRegistrationUrl(homeSt) && (
