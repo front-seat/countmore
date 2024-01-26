@@ -1,5 +1,3 @@
-import { clsx } from "clsx";
-
 export const CornerDownLeft: React.FC<{ className?: string }> = ({
   className,
 }) => (
@@ -13,16 +11,16 @@ export const CornerDownLeft: React.FC<{ className?: string }> = ({
       <path
         d="M7 8L2 13L7 18"
         stroke="currentColor"
-        stroke-width="2.2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M18 2V9C18 10.0609 17.5786 11.0783 16.8284 11.8284C16.0783 12.5786 15.0609 13 14 13H2"
         stroke="currentColor"
-        stroke-width="2.2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </g>
     <defs>
@@ -42,24 +40,24 @@ export const Share: React.FC<{ className?: string }> = ({ className }) => (
   >
     <path
       d="M5.33594 16V26.6667C5.33594 27.3739 5.61689 28.0522 6.11699 28.5523C6.61708 29.0524 7.29536 29.3333 8.0026 29.3333H24.0026C24.7098 29.3333 25.3881 29.0524 25.8882 28.5523C26.3883 28.0522 26.6693 27.3739 26.6693 26.6667V16"
-      stroke-width="3"
+      strokeWidth="3"
       stroke-color="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M21.3268 7.99837L15.9935 2.66504L10.6602 7.99837"
-      stroke-width="3"
+      strokeWidth="3"
       stroke-color="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M16 2.66504V19.9984"
-      stroke-width="3"
+      strokeWidth="3"
       stroke-color="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

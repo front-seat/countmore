@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { ReactNode } from "react";
 
 import { bestRegistrationUrl } from "../vote_gov";
@@ -178,8 +178,8 @@ interface StateSelectionResult {
 }
 
 /** Return the vote.gov URL for a state */
-const voteGovUrl = (st: string): string =>
-  `https://vote.gov/register/${st.toLowerCase()}/`;
+// const voteGovUrl = (st: string): string =>
+//   `https://vote.gov/register/${st.toLowerCase()}/`;
 
 /** A React component with two dropdowns containing states; shows which one to use. */
 const SelectStates: React.FC<{
