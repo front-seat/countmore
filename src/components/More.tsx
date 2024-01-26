@@ -190,15 +190,18 @@ const More: React.FC = () => {
 
   return (
     <div className="flex flex-col space-y-12">
-      <h2 className="text-3xl font-medium">
-        Enter your home state and school state to learn where your vote counts
+      <h2 className="font-extrabold text-[24px] leading-[33.6px]">
+        Choose your home state and school state to learn where your vote counts
         more:
       </h2>
 
       {/* Dropdown for home state */}
-      <div className="flex flex-row space-x-4">
-        <label className="text-normal font-medium w-[40%]" htmlFor="home-state">
-          Your home state:
+      <div className="flex flex-col space-y-4">
+        <label
+          className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px] w-[40%]"
+          htmlFor="home-state"
+        >
+          Home state
         </label>
         <select
           id="home-state"
@@ -216,12 +219,12 @@ const More: React.FC = () => {
       </div>
 
       {/* Dropdown for school state */}
-      <div className="flex flex-row space-x-4">
+      <div className="flex flex-col space-y-4">
         <label
-          className="text-normal font-medium w-[40%]"
+          className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px] w-[40%]"
           htmlFor="school-state"
         >
-          Your school state:
+          School state
         </label>
         <select
           id="school-state"

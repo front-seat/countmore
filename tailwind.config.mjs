@@ -6,7 +6,11 @@ export default {
       screens: {
         md: '768px',
         lg: '960px',
-      }
+      },
+      fontFamily: {
+        cabinet: ['CabinetGrotesk', 'sans-serif'],
+        satoshi: ['Satoshi', 'sans-serif'],
+      },
     },
   },
   plugins: [],
