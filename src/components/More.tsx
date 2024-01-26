@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { bestRegistrationUrl } from "../vote_gov";
+import { ArrowDown, CornerDownLeft } from "./Icons";
 
 /** The fifty nifty United States (from the original thirteen colonies!) */
 const US_STATES: { [st: string]: string } = {
@@ -164,29 +165,28 @@ const stateSelection = (homeSt: string, schoolSt: string): StateSelection => {
   }
 };
 
+/** A state selection result. */
+interface StateSelectionResult {
+  /** The state selection */
+  selection: StateSelection;
+
+  /** The home state */
+  homeSt: string;
+
+  /** The school state */
+  schoolSt: string;
+}
+
 /** Return the vote.gov URL for a state */
 const voteGovUrl = (st: string): string =>
   `https://vote.gov/register/${st.toLowerCase()}/`;
 
 /** A React component with two dropdowns containing states; shows which one to use. */
-const More: React.FC = () => {
+const SelectStates: React.FC<{
+  onSelect: (result: StateSelectionResult) => void;
+}> = ({ onSelect }) => {
   const [homeSt, setHomeSt] = useState<string>("");
   const [schoolSt, setSchoolSt] = useState<string>("");
-
-  const selection = stateSelection(homeSt, schoolSt);
-
-  // Send a google analytics event when the selection changes
-  useEffect(() => {
-    if (homeSt && schoolSt) {
-      window.gtag("event", "show_me", {
-        event_category: "show_me",
-        event_label: "Show me where to vote",
-        home_state: homeSt,
-        school_state: schoolSt,
-        selection,
-      });
-    }
-  }, [homeSt, schoolSt]);
 
   return (
     <div className="flex flex-col space-y-12">
@@ -198,56 +198,99 @@ const More: React.FC = () => {
       {/* Dropdown for home state */}
       <div className="flex flex-col space-y-4">
         <label
-          className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px] w-[40%]"
+          className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px]"
           htmlFor="home-state"
         >
           Home state
         </label>
-        <select
-          id="home-state"
-          className="flex-grow"
-          value={homeSt}
-          onChange={(e) => setHomeSt(e.target.value)}
-        >
-          <option value="">Select a state</option>
-          {Object.entries(US_STATES).map(([st, name]) => (
-            <option key={st} value={st}>
-              {name}
+        <div className="block relative">
+          <select
+            id="home-state"
+            className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black"
+            value={homeSt}
+            required
+            onChange={(e) => setHomeSt(e.target.value)}
+          >
+            <option value="" disabled selected>
+              choose...
             </option>
-          ))}
-        </select>
+            {Object.entries(US_STATES).map(([st, name]) => (
+              <option key={st} value={st}>
+                {name}
+              </option>
+            ))}
+          </select>
+          <ArrowDown className="block w-8 h-8 absolute right-0 top-0 pointer-events-none text-black" />
+        </div>
       </div>
 
       {/* Dropdown for school state */}
       <div className="flex flex-col space-y-4">
         <label
-          className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px] w-[40%]"
+          className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px]"
           htmlFor="school-state"
         >
           School state
         </label>
-        <select
-          id="school-state"
-          className="flex-grow"
-          value={schoolSt}
-          onChange={(e) => setSchoolSt(e.target.value)}
-        >
-          <option value="">Select a state</option>
-          {Object.entries(US_STATES).map(([st, name]) => (
-            <option key={st} value={st}>
-              {name}
+        <div className="block relative">
+          <select
+            id="school-state"
+            className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black focus:ring-hover"
+            value={schoolSt}
+            required
+            onChange={(e) => setSchoolSt(e.target.value)}
+          >
+            <option value="" disabled selected>
+              choose...
             </option>
-          ))}
-        </select>
+            {Object.entries(US_STATES).map(([st, name]) => (
+              <option key={st} value={st}>
+                {name}
+              </option>
+            ))}
+          </select>
+          <ArrowDown className="block w-8 h-8 absolute right-0 top-0 pointer-events-none text-black" />
+        </div>
       </div>
 
-      {/* Show the result */}
-      <div>
-        {homeSt &&
-          schoolSt &&
-          SELECTION_DESCRIPTION[selection](homeSt, schoolSt)}
+      {/* Enter button */}
+      <div className="flex flex-row">
+        <div className="flex-grow">&nbsp;</div>
+        <button
+          className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[18px] px-[28px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
+          onClick={() =>
+            onSelect({
+              selection: stateSelection(homeSt, schoolSt),
+              homeSt,
+              schoolSt,
+            })
+          }
+          disabled={!homeSt || !schoolSt}
+        >
+          <span>
+            Enter&nbsp;
+            <CornerDownLeft className="inline w-[20px] h-[20px] ml-2 -mt-1" />
+          </span>
+        </button>
       </div>
     </div>
+  );
+};
+
+const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
+  result,
+}) => {
+  const { selection, homeSt, schoolSt } = result;
+  return <div>{SELECTION_DESCRIPTION[selection](homeSt, schoolSt)}</div>;
+};
+
+export const More: React.FC = () => {
+  const [result, setResult] = useState<StateSelectionResult | null>(null);
+
+  return result ? (
+    <DescribeSelection result={result} />
+  ) : (
+    <SelectStates onSelect={setResult} />
   );
 };
 
