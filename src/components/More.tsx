@@ -3,60 +3,8 @@ import type { ReactNode } from "react";
 
 import { bestRegistrationUrl } from "../vote_gov";
 import { ArrowDown, CornerDownLeft } from "./Icons";
-
-/** The fifty nifty United States (from the original thirteen colonies!) */
-const US_STATES: { [st: string]: string } = {
-  AL: "Alabama",
-  AK: "Alaska",
-  AZ: "Arizona",
-  AR: "Arkansas",
-  CA: "California",
-  CO: "Colorado",
-  CT: "Connecticut",
-  DE: "Delaware",
-  FL: "Florida",
-  GA: "Georgia",
-  HI: "Hawaii",
-  ID: "Idaho",
-  IL: "Illinois",
-  IN: "Indiana",
-  IA: "Iowa",
-  KS: "Kansas",
-  KY: "Kentucky",
-  LA: "Louisiana",
-  ME: "Maine",
-  MD: "Maryland",
-  MA: "Massachusetts",
-  MI: "Michigan",
-  MN: "Minnesota",
-  MS: "Mississippi",
-  MO: "Missouri",
-  MT: "Montana",
-  NE: "Nebraska",
-  NV: "Nevada",
-  NH: "New Hampshire",
-  NJ: "New Jersey",
-  NM: "New Mexico",
-  NY: "New York",
-  NC: "North Carolina",
-  ND: "North Dakota",
-  OH: "Ohio",
-  OK: "Oklahoma",
-  OR: "Oregon",
-  PA: "Pennsylvania",
-  RI: "Rhode Island",
-  SC: "South Carolina",
-  SD: "South Dakota",
-  TN: "Tennessee",
-  TX: "Texas",
-  UT: "Utah",
-  VT: "Vermont",
-  VA: "Virginia",
-  WA: "Washington",
-  WV: "West Virginia",
-  WI: "Wisconsin",
-  WY: "Wyoming",
-};
+import { STATE_NAMES } from "../states";
+import type { State } from "../states";
 
 /** Countmore power rankings */
 const POWER_RANKINGS: { [st: string]: number } = {
@@ -84,13 +32,13 @@ type StateSelection = "home" | "school" | "toss-up";
 
 /** Selection description */
 const SELECTION_DESCRIPTION: {
-  [sel in StateSelection]: (homeSt: string, schoolSt: string) => ReactNode;
+  [sel in StateSelection]: (homeSt: State, schoolSt: State) => ReactNode;
 } = {
-  home: (homeSt: string, __: string) => (
+  home: (homeSt: State, __: State) => (
     <div>
       <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
         Your vote counts more in{" "}
-        <span className="text-point">{US_STATES[homeSt]}</span>.
+        <span className="text-point">{STATE_NAMES[homeSt]}</span>.
       </div>
       <p className="py-8">Put some explanatory text here.</p>
       {bestRegistrationUrl(homeSt) && (
@@ -104,11 +52,11 @@ const SELECTION_DESCRIPTION: {
       )}
     </div>
   ),
-  school: (_: string, schoolSt: string) => (
+  school: (_: State, schoolSt: State) => (
     <div>
       <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
         Your vote counts more in{" "}
-        <span className="text-point">{US_STATES[schoolSt]}</span>.
+        <span className="text-point">{STATE_NAMES[schoolSt]}</span>.
       </div>
       <p className="py-8">Put some explanatory text here.</p>
       {bestRegistrationUrl(schoolSt) && (
@@ -122,12 +70,12 @@ const SELECTION_DESCRIPTION: {
       )}
     </div>
   ),
-  "toss-up": (homeSt: string, schoolSt: string) => (
+  "toss-up": (homeSt: State, schoolSt: State) => (
     <div>
       <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
         Your vote counts the same in{" "}
-        <span className="text-point">{US_STATES[homeSt]}</span> and{" "}
-        <span className="text-point">{US_STATES[schoolSt]}</span>.
+        <span className="text-point">{STATE_NAMES[homeSt]}</span> and{" "}
+        <span className="text-point">{STATE_NAMES[schoolSt]}</span>.
       </div>
       <p className="py-8">Put some explanatory text here.</p>
       {bestRegistrationUrl(homeSt) && (
@@ -136,7 +84,7 @@ const SELECTION_DESCRIPTION: {
           href={bestRegistrationUrl(homeSt)!}
           target="_blank"
         >
-          Register to vote in {US_STATES[homeSt]}
+          Register to vote in {STATE_NAMES[homeSt]}
         </a>
       )}{" "}
       {bestRegistrationUrl(schoolSt) && (
@@ -145,7 +93,7 @@ const SELECTION_DESCRIPTION: {
           href={bestRegistrationUrl(schoolSt)!}
           target="_blank"
         >
-          Register to vote in {US_STATES[schoolSt]}
+          Register to vote in {STATE_NAMES[schoolSt]}
         </a>
       )}
     </div>
@@ -171,10 +119,10 @@ interface StateSelectionResult {
   selection: StateSelection;
 
   /** The home state */
-  homeSt: string;
+  homeSt: State;
 
   /** The school state */
-  schoolSt: string;
+  schoolSt: State;
 }
 
 /** Return the vote.gov URL for a state */
@@ -185,8 +133,8 @@ interface StateSelectionResult {
 const SelectStates: React.FC<{
   onSelect: (result: StateSelectionResult) => void;
 }> = ({ onSelect }) => {
-  const [homeSt, setHomeSt] = useState<string>("");
-  const [schoolSt, setSchoolSt] = useState<string>("");
+  const [homeSt, setHomeSt] = useState<State | "">("");
+  const [schoolSt, setSchoolSt] = useState<State | "">("");
 
   return (
     <div className="flex flex-col space-y-12">
@@ -209,12 +157,12 @@ const SelectStates: React.FC<{
             className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black"
             value={homeSt}
             required
-            onChange={(e) => setHomeSt(e.target.value)}
+            onChange={(e) => setHomeSt(e.target.value as State)}
           >
             <option value="" disabled selected>
               choose...
             </option>
-            {Object.entries(US_STATES).map(([st, name]) => (
+            {Object.entries(STATE_NAMES).map(([st, name]) => (
               <option key={st} value={st}>
                 {name}
               </option>
@@ -238,12 +186,12 @@ const SelectStates: React.FC<{
             className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black focus:ring-hover"
             value={schoolSt}
             required
-            onChange={(e) => setSchoolSt(e.target.value)}
+            onChange={(e) => setSchoolSt(e.target.value as State)}
           >
             <option value="" disabled selected>
               choose...
             </option>
-            {Object.entries(US_STATES).map(([st, name]) => (
+            {Object.entries(STATE_NAMES).map(([st, name]) => (
               <option key={st} value={st}>
                 {name}
               </option>
@@ -258,13 +206,14 @@ const SelectStates: React.FC<{
         <div className="flex-grow">&nbsp;</div>
         <button
           className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[18px] px-[28px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
-          onClick={() =>
+          onClick={() => {
+            if (!homeSt || !schoolSt) return;
             onSelect({
               selection: stateSelection(homeSt, schoolSt),
               homeSt,
               schoolSt,
-            })
-          }
+            });
+          }}
           disabled={!homeSt || !schoolSt}
         >
           <span>
