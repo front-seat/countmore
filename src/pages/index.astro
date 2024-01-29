@@ -17,10 +17,51 @@ import More from "../components/More.tsx";
         Count<br />More
       </h1>
     </div>
-    <div class="w-full md:w-2/3">
+    <div class="w-full md:w-2/ flex flex-col space-y-8">
       <div class="border-4 mt-4 md:m-4 border-black p-4">
         <More client:load />
       </div>
+      <div class="border-4 mt-4 md:m-4 border-transparent p-4">
+        <p class="font-cabinet font-extrabold text-[24px]">
+          Why does my vote count more in certain states?
+        </p>
+        <p class="font-satoshi font-medium text-[20px] leading-[30px] pt-4">
+          In U.S. Presidential elections, your vote may count more in some
+          states due to the Electoral College system. Each state has a set
+          number of electors, which doesn't always match its population size
+          proportionally. Smaller states have more electoral influence per
+          capita, making individual votes there more impactful. Additionally,
+          "swing states," where outcomes are unpredictable, receive more
+          attention because winning these states can be crucial for a
+          candidate's success. This system leads to varying influence of votes
+          across different states. <i>TODO</i>: update content.
+        </p>
+        <p class="font-cabinet font-extrabold text-[24px] pt-8">
+          Who is Vote America?
+        </p>
+        <p class="font-satoshi font-medium text-[20px] leading-[30px] pt-4">
+          Vote America is a nonprofit organization focused on strengthening
+          American democracy by increasing voter turnout and removing barriers
+          to voting. It was founded by Debra Cleaver, who previously launched
+          Vote.org. The organization aims to boost voter turnout by assisting
+          people with mail-in voting, especially in light of challenges such as
+          the COVID-19 pandemic and various voting hurdles in the U.S.
+        </p>
+      </div>
+      <footer
+        class="flex flex-row py-12 border-4 border-transparent mt-4 md:m-4 p-4 items-baseline"
+      >
+        <div class="font-cabinet font-extrabold text-[18px] leading-[20px]">
+          ©2024 Count More
+        </div>
+        <div class="flex-grow"></div>
+        <a
+          class="block font-cabinet font-extrabold text-[18px] leading-[20px] text-white bg-black rounded-md px-[20px] py-[14px] hover:bg-gray-700 transition-colors duration-200"
+          href="mailto:Dave Peck <dave@frontseat.org>, Matt Lerner <matt@frontseat.org>?subject=Count%20More"
+        >
+          Contact</a
+        >
+      </footer>
     </div>
   </main>
 </Layout>
