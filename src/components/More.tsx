@@ -6,6 +6,14 @@ import { ArrowDown, CornerDownLeft, Share } from "./Icons";
 import { STATE_NAMES } from "../states";
 import type { State } from "../states";
 import { browserSupportsShare, defaultShare } from "./ShareButton";
+import {
+  EV_2024,
+  CANDIDATES_2020,
+  ELECTION_2020,
+  winner,
+  describeMargin,
+} from "../presidency";
+import { formatNumber, formatPercent } from "../format";
 
 /** Countmore power rankings */
 const POWER_RANKINGS: { [st: string]: number } = {
@@ -29,10 +37,11 @@ const POWER_RANKINGS: { [st: string]: number } = {
 const powerRanking = (st: string): number => POWER_RANKINGS[st] || 0;
 
 /** Which state is most impactful to vote in for the 2024 presidential election? */
-type StateSelection = "home" | "school" | "toss-up";
+type StateSelection = "home" | "school" | "toss-up" | "same";
 
 /** Return the state selection for a state */
 const stateSelection = (homeSt: string, schoolSt: string): StateSelection => {
+  if (homeSt === schoolSt) return "same";
   const homeRank = powerRanking(homeSt);
   const schoolRank = powerRanking(schoolSt);
   if (homeRank > schoolRank) {
@@ -166,8 +175,9 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
 
   return (
     <div>
+      {/* Headline for selection. */}
       <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
-        {selection !== "toss-up" && (
+        {selection !== "toss-up" && selection !== "same" && (
           <>
             Your vote counts more in{" "}
             <span className="text-point">
@@ -183,8 +193,93 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
             <span className="text-point">{STATE_NAMES[schoolSt]}</span>.
           </>
         )}
+        {selection === "same" && (
+          <>
+            Your home and school states are both{" "}
+            <span className="text-point">{STATE_NAMES[homeSt]}</span>.
+          </>
+        )}
       </div>
-      <p className="py-8">Put some explanatory text here.</p>
+      {/* Explanatory text for selection. */}
+      <p className="font-satoshi font-medium py-8 text-[20px] leading-[30px]">
+        {selection === "same" && (
+          <>
+            That makes things simple: you should vote in{" "}
+            <span className="text-point">{STATE_NAMES[homeSt]}</span>.<br />
+            <br />
+            Your home state is worth{" "}
+            <span className="font-black">{EV_2024[homeSt]}</span> electoral
+            votes in 2024. In the 2020 election,{" "}
+            <span className="font-black">
+              {winner(ELECTION_2020[homeSt], CANDIDATES_2020)}
+            </span>{" "}
+            won your state by {describeMargin(ELECTION_2020[homeSt])}.
+          </>
+        )}
+        {selection === "toss-up" && (
+          <>
+            It's a toss-up between your home and school states. Choose the state
+            that works best for you, but please remember that you can only vote
+            in one of them.
+            <br />
+            <br />
+            In 2024, <span className="text-point">
+              {STATE_NAMES[homeSt]}
+            </span>{" "}
+            gets <span className="font-black">{EV_2024[homeSt]}</span> electoral
+            votes; <span className="text-point">{STATE_NAMES[schoolSt]}</span>{" "}
+            gets <span className="font-black">{EV_2024[schoolSt]}</span>. In the
+            2020 election,{" "}
+            <span className="font-black">
+              {winner(ELECTION_2020[homeSt], CANDIDATES_2020)}
+            </span>{" "}
+            won {STATE_NAMES[homeSt]} by {describeMargin(ELECTION_2020[homeSt])}
+            , while{" "}
+            <span className="font-black">
+              {winner(ELECTION_2020[schoolSt], CANDIDATES_2020)}
+            </span>{" "}
+            won {STATE_NAMES[schoolSt]} by{" "}
+            {describeMargin(ELECTION_2020[schoolSt])}.
+          </>
+        )}
+        {selection === "home" && (
+          <>
+            You should vote in your home state of{" "}
+            <span className="text-point">{STATE_NAMES[homeSt]}</span>.
+            It&rsquo;s a battleground state where your vote has a better chance
+            of swinging the election.
+            <br />
+            <br />
+            <span className="text-point">{STATE_NAMES[homeSt]}</span> is worth{" "}
+            <span className="font-black">{EV_2024[homeSt]}</span> electoral
+            votes in 2024. In the 2020 election,{" "}
+            <span className="font-black">
+              {winner(ELECTION_2020[homeSt], CANDIDATES_2020)}
+            </span>{" "}
+            won by {describeMargin(ELECTION_2020[homeSt])}.
+          </>
+        )}
+        {selection === "school" && (
+          <>
+            You should vote in your school state,{" "}
+            <span className="text-point">{STATE_NAMES[schoolSt]}</span>.
+            It&rsquo;s a battleground state where your vote has a better chance
+            of swinging the election.
+            <br />
+            <br />
+            <span className="text-point">
+              {STATE_NAMES[schoolSt]}
+            </span> worth{" "}
+            <span className="font-black">{EV_2024[schoolSt]}</span> electoral
+            votes in 2024. In the 2020 election,{" "}
+            <span className="font-black">
+              {winner(ELECTION_2020[schoolSt], CANDIDATES_2020)}
+            </span>{" "}
+            won by {describeMargin(ELECTION_2020[schoolSt])}.
+          </>
+        )}
+      </p>
+      {/* Action buttons for selection (share/register to vote/etc). */}
       <div className="flex flex-row justify-between items-center">
         <div className="flex-none">
           {browserSupportsShare() ? (
@@ -215,27 +310,29 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
               )}
             </a>
           )}
-          {selection !== "home" && bestRegistrationUrl(schoolSt) && (
-            <a
-              className={clsx(
-                "inline-block bg-point rounded-md py-4 px-8 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2",
-                selection === "toss-up" && "ml-4"
-              )}
-              href={bestRegistrationUrl(schoolSt)!}
-              target="_blank"
-            >
-              Register to vote
-              {selection === "toss-up" && (
-                <>
-                  {" "}
-                  in{" "}
-                  <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
-                    {schoolSt.toUpperCase()}
-                  </span>
-                </>
-              )}
-            </a>
-          )}
+          {selection !== "home" &&
+            selection !== "same" &&
+            bestRegistrationUrl(schoolSt) && (
+              <a
+                className={clsx(
+                  "inline-block bg-point rounded-md py-4 px-8 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2",
+                  selection === "toss-up" && "ml-4"
+                )}
+                href={bestRegistrationUrl(schoolSt)!}
+                target="_blank"
+              >
+                Register to vote
+                {selection === "toss-up" && (
+                  <>
+                    {" "}
+                    in{" "}
+                    <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
+                      {schoolSt.toUpperCase()}
+                    </span>
+                  </>
+                )}
+              </a>
+            )}
         </div>
       </div>
     </div>

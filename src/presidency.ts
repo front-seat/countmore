@@ -1,6 +1,7 @@
 import type { State } from "./states";
+import { formatNumber, formatPercent } from "./format";
 
-type Party = "dem" | "rep" | "other";
+export type Party = "dem" | "rep" | "other";
 type StateElection = {
   ev: Record<Party, number>;
   votes: Record<Party, number>;
@@ -20,7 +21,7 @@ export const votesPercent = (election: StateElection, party: Party): number =>
   election.votes[party] / totalVotes(election);
 
 /** Return the winning party for a given state. */
-export const winner = (election: StateElection): Party => {
+export const winningParty = (election: StateElection): Party => {
   if (
     election.votes.dem > election.votes.rep &&
     election.votes.dem > election.votes.other
@@ -34,16 +35,59 @@ export const winner = (election: StateElection): Party => {
   return "other";
 };
 
+/** Return the winning candidate for a given state. */
+export const winner = (
+  election: StateElection,
+  candidates: Record<Party, string>
+): string => candidates[winningParty(election)];
+
 /** Return the absolute number of votes margin for the winner, ignoring "other". */
 export const margin = (election: StateElection): number =>
   Math.abs(election.votes.dem - election.votes.rep);
+
+/** Return a formatted absolute number of votes margin for the winner. */
+export const formatMargin = (election: StateElection): string =>
+  formatNumber(margin(election));
 
 /** Return the percent of votes margin for the winner, ignoring "other". */
 export const marginPercent = (election: StateElection): number =>
   margin(election) / totalVotes(election);
 
+/** Return a formatted percent of votes margin for the winner. */
+export const formatMarginPercent = (election: StateElection): string =>
+  marginPercent(election) <= 0.01
+    ? "<1%"
+    : formatPercent(marginPercent(election));
+
+/** Describe the margin using words. */
+export const describeMargin = (election: StateElection): string => {
+  const p = marginPercent(election);
+  if (p < 0.01)
+    return `a razor-thin margin of ${formatMargin(election)} votes (<1%)`;
+  if (p < 0.05)
+    return `a slim margin of ${formatMargin(election)} votes (${formatPercent(
+      p
+    )})`;
+  if (p < 0.2)
+    return `a fair margin of ${formatMargin(election)} votes (${formatPercent(
+      p
+    )})`;
+  if (p < 0.5)
+    return `a solid margin of ${formatMargin(election)} votes (${formatPercent(
+      p
+    )})`;
+  return `a landslide of ${formatMargin(election)} votes (${formatPercent(p)})`;
+};
+
+/** 2020 Election candidates. */
+export const CANDIDATES_2020: Record<Party, string> = {
+  dem: "Biden",
+  rep: "Trump",
+  other: "Other",
+};
+
 /** 2020 Election data sourced from https://www.presidency.ucsb.edu/statistics/elections/2020 */
-export const PRESIDENTAL_2020: PresidentialElection = {
+export const ELECTION_2020: PresidentialElection = {
   AL: {
     ev: { dem: 0, rep: 9, other: 0 },
     votes: { dem: 849_624, rep: 1_441_170, other: 32_488 },
@@ -250,8 +294,15 @@ export const PRESIDENTAL_2020: PresidentialElection = {
   },
 };
 
+/** 2016 Election Candidates */
+export const CANDIDATES_2016: Record<Party, string> = {
+  dem: "Clinton",
+  rep: "Trump",
+  other: "Other",
+};
+
 /** 2016 Election data sourced from https://www.presidency.ucsb.edu/statistics/elections/2016 */
-export const PRESIDENTAL_2016: PresidentialElection = {
+export const ELECTION_2016: PresidentialElection = {
   AL: {
     ev: { dem: 0, rep: 9, other: 0 },
     votes: { dem: 729_547, rep: 1_318_255, other: 44_467 },

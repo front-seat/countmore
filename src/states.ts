@@ -7,7 +7,7 @@ export const STATE_NAMES = {
   CA: "California",
   CO: "Colorado",
   CT: "Connecticut",
-  DC: "District of Columbia",
+  DC: "DC",
   DE: "Delaware",
   FL: "Florida",
   GA: "Georgia",
