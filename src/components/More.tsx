@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import clsx from "clsx";
 
 import { bestRegistrationUrl } from "../vote_gov";
@@ -341,10 +341,23 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
 export const More: React.FC = () => {
   const [result, setResult] = useState<StateSelectionResult | null>(null);
 
+  const handleSelection = useCallback((result: StateSelectionResult) => {
+    if (window.gtag) {
+      window.gtag("event", "select", {
+        event_category: "state_selection",
+        event_label: "state_selection",
+        home_state: result.homeSt.toUpperCase(),
+        school_state: result.schoolSt.toUpperCase(),
+        selection: result.selection,
+      });
+    }
+    setResult(result);
+  }, []);
+
   return result ? (
     <DescribeSelection result={result} />
   ) : (
-    <SelectStates onSelect={setResult} />
+    <SelectStates onSelect={handleSelection} />
   );
 };
 
