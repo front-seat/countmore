@@ -226,10 +226,11 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
             In 2024, <span className="text-point">
               {STATE_NAMES[homeSt]}
             </span>{" "}
-            gets <span className="font-black">{EV_2024[homeSt]}</span> electoral
-            votes; <span className="text-point">{STATE_NAMES[schoolSt]}</span>{" "}
-            gets <span className="font-black">{EV_2024[schoolSt]}</span>. In the
-            2020 election,{" "}
+            is worth <span className="font-black">{EV_2024[homeSt]}</span>{" "}
+            electoral votes;{" "}
+            <span className="text-point">{STATE_NAMES[schoolSt]}</span> is worth{" "}
+            <span className="font-black">{EV_2024[schoolSt]}</span>. In the 2020
+            election,{" "}
             <span className="font-black">
               {winner(ELECTION_2020[homeSt], CANDIDATES_2020)}
             </span>{" "}
@@ -267,9 +268,7 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
             of swinging the election.
             <br />
             <br />
-            <span className="text-point">
-              {STATE_NAMES[schoolSt]}
-            </span> worth{" "}
+            <span className="text-point">{STATE_NAMES[schoolSt]}</span> is worth{" "}
             <span className="font-black">{EV_2024[schoolSt]}</span> electoral
             votes in 2024. In the 2020 election,{" "}
             <span className="font-black">
