@@ -235,10 +235,17 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
               {winner(ELECTION_2020[homeSt], CANDIDATES_2020)}
             </span>{" "}
             won {STATE_NAMES[homeSt]} by {describeMargin(ELECTION_2020[homeSt])}
-            , while{" "}
+            {winner(ELECTION_2020[schoolSt], CANDIDATES_2020) ===
+            winner(ELECTION_2020[homeSt], CANDIDATES_2020)
+              ? ". "
+              : ", while "}
             <span className="font-black">
               {winner(ELECTION_2020[schoolSt], CANDIDATES_2020)}
-            </span>{" "}
+            </span>
+            {winner(ELECTION_2020[schoolSt], CANDIDATES_2020) ===
+            winner(ELECTION_2020[homeSt], CANDIDATES_2020)
+              ? " also "
+              : " "}
             won {STATE_NAMES[schoolSt]} by{" "}
             {describeMargin(ELECTION_2020[schoolSt])}.
           </>
