@@ -1,10 +1,11 @@
 import { useState } from "react";
-import type { ReactNode } from "react";
+import clsx from "clsx";
 
 import { bestRegistrationUrl } from "../vote_gov";
-import { ArrowDown, CornerDownLeft } from "./Icons";
+import { ArrowDown, CornerDownLeft, Share } from "./Icons";
 import { STATE_NAMES } from "../states";
 import type { State } from "../states";
+import { browserSupportsShare, defaultShare } from "./ShareButton";
 
 /** Countmore power rankings */
 const POWER_RANKINGS: { [st: string]: number } = {
@@ -29,76 +30,6 @@ const powerRanking = (st: string): number => POWER_RANKINGS[st] || 0;
 
 /** Which state is most impactful to vote in for the 2024 presidential election? */
 type StateSelection = "home" | "school" | "toss-up";
-
-/** Selection description */
-const SELECTION_DESCRIPTION: {
-  [sel in StateSelection]: (homeSt: State, schoolSt: State) => ReactNode;
-} = {
-  home: (homeSt: State, __: State) => (
-    <div>
-      <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
-        Your vote counts more in{" "}
-        <span className="text-point">{STATE_NAMES[homeSt]}</span>.
-      </div>
-      <p className="py-8">Put some explanatory text here.</p>
-      {bestRegistrationUrl(homeSt) && (
-        <a
-          className="inline-block g-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
-          href={bestRegistrationUrl(homeSt)!}
-          target="_blank"
-        >
-          Register to vote
-        </a>
-      )}
-    </div>
-  ),
-  school: (_: State, schoolSt: State) => (
-    <div>
-      <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
-        Your vote counts more in{" "}
-        <span className="text-point">{STATE_NAMES[schoolSt]}</span>.
-      </div>
-      <p className="py-8">Put some explanatory text here.</p>
-      {bestRegistrationUrl(schoolSt) && (
-        <a
-          className="inline-block bg-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
-          href={bestRegistrationUrl(schoolSt)!}
-          target="_blank"
-        >
-          Register to vote
-        </a>
-      )}
-    </div>
-  ),
-  "toss-up": (homeSt: State, schoolSt: State) => (
-    <div>
-      <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
-        Your vote counts the same in{" "}
-        <span className="text-point">{STATE_NAMES[homeSt]}</span> and{" "}
-        <span className="text-point">{STATE_NAMES[schoolSt]}</span>.
-      </div>
-      <p className="py-8">Put some explanatory text here.</p>
-      {bestRegistrationUrl(homeSt) && (
-        <a
-          className="inline-block bg-black mb-8 py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
-          href={bestRegistrationUrl(homeSt)!}
-          target="_blank"
-        >
-          Register to vote in {STATE_NAMES[homeSt]}
-        </a>
-      )}{" "}
-      {bestRegistrationUrl(schoolSt) && (
-        <a
-          className="inline-block bg-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
-          href={bestRegistrationUrl(schoolSt)!}
-          target="_blank"
-        >
-          Register to vote in {STATE_NAMES[schoolSt]}
-        </a>
-      )}
-    </div>
-  ),
-};
 
 /** Return the state selection for a state */
 const stateSelection = (homeSt: string, schoolSt: string): StateSelection => {
@@ -157,9 +88,10 @@ const SelectStates: React.FC<{
             className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black"
             value={homeSt}
             required
+            defaultValue=""
             onChange={(e) => setHomeSt(e.target.value as State)}
           >
-            <option value="" disabled selected>
+            <option value="" disabled>
               choose...
             </option>
             {Object.entries(STATE_NAMES).map(([st, name]) => (
@@ -186,9 +118,10 @@ const SelectStates: React.FC<{
             className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black focus:ring-hover"
             value={schoolSt}
             required
+            defaultValue=""
             onChange={(e) => setSchoolSt(e.target.value as State)}
           >
-            <option value="" disabled selected>
+            <option value="" disabled>
               choose...
             </option>
             {Object.entries(STATE_NAMES).map(([st, name]) => (
@@ -230,7 +163,83 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
   result,
 }) => {
   const { selection, homeSt, schoolSt } = result;
-  return <div>{SELECTION_DESCRIPTION[selection](homeSt, schoolSt)}</div>;
+
+  return (
+    <div>
+      <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
+        {selection !== "toss-up" && (
+          <>
+            Your vote counts more in{" "}
+            <span className="text-point">
+              {STATE_NAMES[selection === "home" ? homeSt : schoolSt]}
+            </span>
+            .
+          </>
+        )}
+        {selection === "toss-up" && (
+          <>
+            Your vote counts the same in{" "}
+            <span className="text-point">{STATE_NAMES[homeSt]}</span> and{" "}
+            <span className="text-point">{STATE_NAMES[schoolSt]}</span>.
+          </>
+        )}
+      </div>
+      <p className="py-8">Put some explanatory text here.</p>
+      <div className="flex flex-row justify-between items-center">
+        <div className="flex-none">
+          {browserSupportsShare() ? (
+            <Share
+              className="text-black hover:text-hover cursor-pointer w-8 h-8 transition-colors duration-200"
+              onClick={defaultShare}
+            />
+          ) : (
+            " "
+          )}
+        </div>
+        <div className="flex-1 flex flex-row flex-wrap justify-end -mb-2">
+          {selection !== "school" && bestRegistrationUrl(homeSt) && (
+            <a
+              className="inline-block bg-point rounded-md py-4 px-8 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2"
+              href={bestRegistrationUrl(homeSt)!}
+              target="_blank"
+            >
+              Register to vote
+              {selection === "toss-up" && (
+                <>
+                  {" "}
+                  in{" "}
+                  <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
+                    {homeSt.toUpperCase()}
+                  </span>
+                </>
+              )}
+            </a>
+          )}
+          {selection !== "home" && bestRegistrationUrl(schoolSt) && (
+            <a
+              className={clsx(
+                "inline-block bg-point rounded-md py-4 px-8 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2",
+                selection === "toss-up" && "ml-4"
+              )}
+              href={bestRegistrationUrl(schoolSt)!}
+              target="_blank"
+            >
+              Register to vote
+              {selection === "toss-up" && (
+                <>
+                  {" "}
+                  in{" "}
+                  <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
+                    {schoolSt.toUpperCase()}
+                  </span>
+                </>
+              )}
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export const More: React.FC = () => {

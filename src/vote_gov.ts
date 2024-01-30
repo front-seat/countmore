@@ -183,6 +183,28 @@ export const VOTE_GOV_DATA: StateVotingInfo[] = [
     },
   },
   {
+    state: "DC",
+    name: "District of Columbia",
+    scrapeUrl: "https://vote.gov/register/dc/",
+    hasRegistration: true,
+    online: {
+      url: "https://vr.dcboe.org/213324797239968?agency_code=12&?ref=countmoreus_en",
+      deadline: 21,
+    },
+    mail: {
+      url: "https://www.dcboe.org/voters/register-to-vote/register-update-voter-registration?ref=countmoreus_en",
+      deadline: 21,
+      timeframe: "received",
+    },
+    inPerson: {
+      url: "https://www.dcboe.org/voters/register-to-vote/register-update-voter-registration?ref=countmoreus_en",
+      deadline: 0,
+    },
+    confirm: {
+      url: "https://vr.dcboe.org/213324797239968?agency_code=12&?ref=countmoreus_en",
+    },
+  },
+  {
     state: "DE",
     name: "Delaware",
     scrapeUrl: "https://vote.gov/register/de/",

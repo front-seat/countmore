@@ -7,7 +7,7 @@ export const CornerDownLeft: React.FC<{ className?: string }> = ({
     xmlns="http://www.w3.org/2000/svg"
     className={className}
   >
-    <g clip-path="url(#clip0_2319_784)">
+    <g clipPath="url(#clip0_2319_784)">
       <path
         d="M7 8L2 13L7 18"
         stroke="currentColor"
@@ -31,31 +31,35 @@ export const CornerDownLeft: React.FC<{ className?: string }> = ({
   </svg>
 );
 
-export const Share: React.FC<{ className?: string }> = ({ className }) => (
+export const Share: React.FC<{ className?: string; onClick: () => void }> = ({
+  className,
+  onClick,
+}) => (
   <svg
     viewBox="0 0 32 32"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     className={className}
+    onClick={onClick}
   >
     <path
       d="M5.33594 16V26.6667C5.33594 27.3739 5.61689 28.0522 6.11699 28.5523C6.61708 29.0524 7.29536 29.3333 8.0026 29.3333H24.0026C24.7098 29.3333 25.3881 29.0524 25.8882 28.5523C26.3883 28.0522 26.6693 27.3739 26.6693 26.6667V16"
       strokeWidth="3"
-      stroke-color="currentColor"
+      stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M21.3268 7.99837L15.9935 2.66504L10.6602 7.99837"
       strokeWidth="3"
-      stroke-color="currentColor"
+      stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M16 2.66504V19.9984"
       strokeWidth="3"
-      stroke-color="currentColor"
+      stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
