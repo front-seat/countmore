@@ -305,6 +305,7 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
           {browserSupportsShare() ? (
             <Share
               className="text-black hover:text-hover cursor-pointer w-8 h-8 transition-colors duration-200"
+              aria-hidden="true"
               onClick={defaultShare}
             />
           ) : (
@@ -317,6 +318,7 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
               className="inline-block bg-point rounded-md py-4 px-8 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2"
               href={bestRegistrationUrl(homeSt)!}
               target="_blank"
+              aria-label={`Follow this link to register to vote in ${STATE_NAMES[homeSt]}`}
             >
               Register to vote
               {selection === "toss-up" && (
@@ -340,6 +342,7 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
                 )}
                 href={bestRegistrationUrl(schoolSt)!}
                 target="_blank"
+                aria-label={`Follow this link to register to vote in ${STATE_NAMES[schoolSt]}`}
               >
                 Register to vote
                 {selection === "toss-up" && (
