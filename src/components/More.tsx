@@ -108,7 +108,6 @@ const SelectStates: React.FC<{
             className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black"
             value={homeSt}
             required
-            defaultValue=""
             onChange={(e) => setHomeSt(e.target.value as State)}
           >
             <option value="" disabled>
@@ -141,7 +140,6 @@ const SelectStates: React.FC<{
             className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black focus:ring-hover"
             value={schoolSt}
             required
-            defaultValue=""
             onChange={(e) => setSchoolSt(e.target.value as State)}
           >
             <option value="" disabled>
