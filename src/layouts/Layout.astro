@@ -16,6 +16,7 @@ const { title } = Astro.props;
       // @ts-nocheck
       window.dataLayer = window.dataLayer || [];
       function gtag() {
+        console.debug("gtag: ", arguments);
         dataLayer.push(arguments);
       }
       window.gtag = window.gtag || gtag;

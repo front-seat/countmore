@@ -187,6 +187,24 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
 }) => {
   const { selection, homeSt, schoolSt } = result;
 
+  const handleRegistrationClick = useCallback(
+    (e: React.MouseEvent, st: State, url: string) => {
+      e.preventDefault();
+
+      if (window.gtag) {
+        window.gtag("event", "register_to_vote", {
+          event_category: "register_to_vote",
+          event_label: "register_to_vote",
+          state: st.toUpperCase(),
+          url: url,
+        });
+      }
+
+      window.open(url, "_blank");
+    },
+    []
+  );
+
   return (
     <div>
       {/* Headline for selection. */}
@@ -318,6 +336,9 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
               className="inline-block bg-point rounded-md py-4 px-8 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2"
               href={bestRegistrationUrl(homeSt)!}
               target="_blank"
+              onClick={(e) =>
+                handleRegistrationClick(e, homeSt, bestRegistrationUrl(homeSt)!)
+              }
               aria-label={`Follow this link to register to vote in ${STATE_NAMES[homeSt]}`}
             >
               Register to vote
@@ -342,6 +363,13 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
                 )}
                 href={bestRegistrationUrl(schoolSt)!}
                 target="_blank"
+                onClick={(e) =>
+                  handleRegistrationClick(
+                    e,
+                    schoolSt,
+                    bestRegistrationUrl(schoolSt)!
+                  )
+                }
                 aria-label={`Follow this link to register to vote in ${STATE_NAMES[schoolSt]}`}
               >
                 Register to vote
@@ -367,9 +395,9 @@ export const More: React.FC = () => {
 
   const handleSelection = useCallback((result: StateSelectionResult) => {
     if (window.gtag) {
-      window.gtag("event", "select", {
-        event_category: "state_selection",
-        event_label: "state_selection",
+      window.gtag("event", "select_states", {
+        event_category: "select_states",
+        event_label: "select_states",
         home_state: result.homeSt.toUpperCase(),
         school_state: result.schoolSt.toUpperCase(),
         selection: result.selection,
