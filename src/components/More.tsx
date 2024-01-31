@@ -191,8 +191,7 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
 
       if (window.gtag) {
         window.gtag("event", "register_to_vote", {
-          event_category: "register_to_vote",
-          event_label: "register_to_vote",
+          event_category: "engagement",
           state: st.toUpperCase(),
           url: url,
         });
@@ -394,8 +393,7 @@ export const More: React.FC = () => {
   const handleSelection = useCallback((result: StateSelectionResult) => {
     if (window.gtag) {
       window.gtag("event", "select_states", {
-        event_category: "select_states",
-        event_label: "select_states",
+        event_category: "engagement",
         home_state: result.homeSt.toUpperCase(),
         school_state: result.schoolSt.toUpperCase(),
         selection: result.selection,
