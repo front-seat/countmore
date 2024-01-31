@@ -77,7 +77,18 @@ const SelectStates: React.FC<{
   const [schoolSt, setSchoolSt] = useState<State | "">("");
 
   return (
-    <div className="flex flex-col space-y-12">
+    <form
+      className="flex flex-col space-y-12"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!homeSt || !schoolSt) return;
+        onSelect({
+          selection: stateSelection(homeSt, schoolSt),
+          homeSt,
+          schoolSt,
+        });
+      }}
+    >
       <h2 className="font-extrabold text-[24px] leading-[33.6px]">
         Choose your home state and school state to learn where your vote counts
         more:
@@ -109,7 +120,10 @@ const SelectStates: React.FC<{
               </option>
             ))}
           </select>
-          <ArrowDown className="block w-8 h-8 absolute right-0 top-0 pointer-events-none text-black" />
+          <ArrowDown
+            className="block w-8 h-8 absolute right-0 top-0 pointer-events-none text-black"
+            aria-hidden="true"
+          />
         </div>
       </div>
 
@@ -139,7 +153,10 @@ const SelectStates: React.FC<{
               </option>
             ))}
           </select>
-          <ArrowDown className="block w-8 h-8 absolute right-0 top-0 pointer-events-none text-black" />
+          <ArrowDown
+            className="block w-8 h-8 absolute right-0 top-0 pointer-events-none text-black"
+            aria-hidden="true"
+          />
         </div>
       </div>
 
@@ -148,23 +165,20 @@ const SelectStates: React.FC<{
         <div className="flex-grow">&nbsp;</div>
         <button
           className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[18px] px-[28px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
-          onClick={() => {
-            if (!homeSt || !schoolSt) return;
-            onSelect({
-              selection: stateSelection(homeSt, schoolSt),
-              homeSt,
-              schoolSt,
-            });
-          }}
+          type="submit"
           disabled={!homeSt || !schoolSt}
         >
           <span>
             Enter&nbsp;
-            <CornerDownLeft className="inline w-[20px] h-[20px] ml-2 -mt-1" />
+            <CornerDownLeft
+              className="inline w-[20px] h-[20px] ml-2 -mt-1"
+              aria-hidden="true"
+              aria-label="Submit your states to see where your vote counts more"
+            />
           </span>
         </button>
       </div>
-    </div>
+    </form>
   );
 };
 
