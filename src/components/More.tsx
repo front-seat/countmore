@@ -16,7 +16,7 @@ import {
 } from "../presidency";
 
 /** Countmore power rankings */
-const POWER_RANKINGS: { [st: string]: number } = {
+const POWER_RANKINGS: Record<string, number> = {
   AZ: 40,
   GA: 40,
   MI: 40,
@@ -29,6 +29,7 @@ const POWER_RANKINGS: { [st: string]: number } = {
   MN: 10,
   NH: 10,
   TX: 10,
+  NE: 10,
   // everyone else gets 0
   // See https://docs.google.com/spreadsheets/d/1ST7LSXFAVyXs2Kbqs7MCrVyVArXOwd0VvKVL5e_14oc/edit#gid=1670074123
 };
