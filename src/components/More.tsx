@@ -1,5 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
+import { assertNever } from "../asserts";
 
 import { bestRegistrationUrl } from "../vote_gov";
 import { ArrowDown, CornerDownLeft, Share } from "./Icons";
@@ -7,13 +8,12 @@ import { STATE_NAMES } from "../states";
 import type { State } from "../states";
 import { browserSupportsShare, defaultShare } from "./ShareButton";
 import {
-  EV_2024,
   CANDIDATES_2020,
   ELECTION_2020,
   winner,
-  describeMargin,
+  formatMargin,
+  marginPercent,
 } from "../presidency";
-import { formatNumber, formatPercent } from "../format";
 
 /** Countmore power rankings */
 const POWER_RANKINGS: { [st: string]: number } = {
@@ -65,11 +65,112 @@ interface StateSelectionResult {
   schoolSt: State;
 }
 
-/** Return the vote.gov URL for a state */
-// const voteGovUrl = (st: string): string =>
-//   `https://vote.gov/register/${st.toLowerCase()}/`;
+/** Return the selected state for a result. */
+const selectedState = (result: StateSelectionResult): State =>
+  result.selection === "home" ? result.homeSt : result.schoolSt;
 
-/** A React component with two dropdowns containing states; shows which one to use. */
+/** Return the selected state name for a result. */
+const selectedStateName = (result: StateSelectionResult): string =>
+  STATE_NAMES[selectedState(result)];
+
+/** Return the 'other' state for a result. */
+const otherState = (result: StateSelectionResult): State =>
+  result.selection === "home" ? result.schoolSt : result.homeSt;
+
+/** Return the 'other' state name for a result. */
+const otherStateName = (result: StateSelectionResult): string =>
+  STATE_NAMES[otherState(result)];
+
+/** Return the 'home' state name for a result. */
+const homeStateName = (result: StateSelectionResult): string =>
+  STATE_NAMES[result.homeSt];
+
+/** Return the 'school' state name for a result. */
+const schoolStateName = (result: StateSelectionResult): string =>
+  STATE_NAMES[result.schoolSt];
+
+/** Renders a share button if native browser sharing is available. */
+const ShareButton: React.FC = () => {
+  const [showShare, setShowShare] = useState(false);
+
+  useEffect(() => {
+    if (browserSupportsShare()) {
+      setShowShare(true);
+    }
+  }, []);
+
+  if (!showShare) return null;
+
+  return (
+    <Share
+      className="text-black hover:text-hover cursor-pointer w-8 h-8 transition-colors duration-200"
+      aria-hidden="true"
+      onClick={defaultShare}
+    />
+  );
+};
+
+//-------------------------------------------------------------------------
+//
+// The following components are used to render the selection form.
+//
+//-------------------------------------------------------------------------
+
+/** Renders a single accessible dropdown in the site's visual style. */
+const StateDropdown: React.FC<{
+  id: string;
+  value: State | "";
+  onChange: (value: State) => void;
+}> = ({ id, value, onChange }) => (
+  <div className="flex flex-col space-y-4">
+    <label
+      className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px]"
+      htmlFor={id}
+    >
+      School state
+    </label>
+    <div className="block relative">
+      <select
+        id={id}
+        className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black focus:ring-hover"
+        value={value}
+        required
+        onChange={(e) => onChange(e.target.value as State)}
+      >
+        <option value="" disabled>
+          choose...
+        </option>
+        {Object.entries(STATE_NAMES).map(([st, name]) => (
+          <option key={st} value={st}>
+            {name}
+          </option>
+        ))}
+      </select>
+      <ArrowDown
+        className="block w-8 h-8 absolute right-0 top-0 pointer-events-none text-black"
+        aria-hidden="true"
+      />
+    </div>
+  </div>
+);
+
+/** Renders our submit button. */
+const SubmitButton: React.FC<
+  React.PropsWithChildren<{ disabled: boolean }>
+> = ({ disabled, children }) => (
+  <div className="flex flex-row">
+    <div className="flex-grow">&nbsp;</div>
+    <button
+      className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[18px] px-[28px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
+      type="submit"
+      disabled={disabled}
+    >
+      <span>{children} </span>
+    </button>
+  </div>
+);
+
+/** Renders the primary form for the website: two dropdowns and a submit button. */
 const SelectStates: React.FC<{
   onSelect: (result: StateSelectionResult) => void;
 }> = ({ onSelect }) => {
@@ -94,96 +195,41 @@ const SelectStates: React.FC<{
         more:
       </h2>
 
-      {/* Dropdown for home state */}
-      <div className="flex flex-col space-y-4">
-        <label
-          className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px]"
-          htmlFor="home-state"
-        >
-          Home state
-        </label>
-        <div className="block relative">
-          <select
-            id="home-state"
-            className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black"
-            value={homeSt}
-            required
-            onChange={(e) => setHomeSt(e.target.value as State)}
-          >
-            <option value="" disabled>
-              choose...
-            </option>
-            {Object.entries(STATE_NAMES).map(([st, name]) => (
-              <option key={st} value={st}>
-                {name}
-              </option>
-            ))}
-          </select>
-          <ArrowDown
-            className="block w-8 h-8 absolute right-0 top-0 pointer-events-none text-black"
-            aria-hidden="true"
-          />
+      <StateDropdown id="home-state" value={homeSt} onChange={setHomeSt} />
+      <StateDropdown
+        id="school-state"
+        value={schoolSt}
+        onChange={setSchoolSt}
+      />
+      <div className="flex flex-row justify-between items-center">
+        <div className="flex-none">
+          <ShareButton />
         </div>
-      </div>
-
-      {/* Dropdown for school state */}
-      <div className="flex flex-col space-y-4">
-        <label
-          className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px]"
-          htmlFor="school-state"
-        >
-          School state
-        </label>
-        <div className="block relative">
-          <select
-            id="school-state"
-            className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black focus:ring-hover"
-            value={schoolSt}
-            required
-            onChange={(e) => setSchoolSt(e.target.value as State)}
-          >
-            <option value="" disabled>
-              choose...
-            </option>
-            {Object.entries(STATE_NAMES).map(([st, name]) => (
-              <option key={st} value={st}>
-                {name}
-              </option>
-            ))}
-          </select>
-          <ArrowDown
-            className="block w-8 h-8 absolute right-0 top-0 pointer-events-none text-black"
-            aria-hidden="true"
-          />
+        <div className="flex-1 flex flex-row flex-wrap justify-end -mb-2">
+          <SubmitButton disabled={!homeSt || !schoolSt}>
+            <>
+              Enter
+              <CornerDownLeft className="inline-block w-8 h-8 ml-2" />
+            </>
+          </SubmitButton>
         </div>
-      </div>
-
-      {/* Enter button */}
-      <div className="flex flex-row">
-        <div className="flex-grow">&nbsp;</div>
-        <button
-          className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[18px] px-[28px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
-          type="submit"
-          disabled={!homeSt || !schoolSt}
-        >
-          <span>
-            Enter&nbsp;
-            <CornerDownLeft
-              className="inline w-[20px] h-[20px] ml-2 -mt-1"
-              aria-hidden="true"
-              aria-label="Submit your states to see where your vote counts more"
-            />
-          </span>
-        </button>
       </div>
     </form>
   );
 };
 
-const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
-  result,
+//-------------------------------------------------------------------------
+//
+// The following components are used to render the selection result.
+//
+//-------------------------------------------------------------------------
+
+/** Renders a single analytics-tracked "register to vote" button. */
+const RegisterToVoteButton: React.FC<{ st: State; className?: string }> = ({
+  st,
+  className,
 }) => {
-  const { selection, homeSt, schoolSt } = result;
+  const url = bestRegistrationUrl(st);
 
   const handleRegistrationClick = useCallback(
     (e: React.MouseEvent, st: State, url: string) => {
@@ -202,184 +248,170 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
     []
   );
 
+  if (!url) return null;
+
+  return (
+    <a
+      className={clsx(
+        "inline-block bg-point rounded-md py-4 px-8 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2",
+        className
+      )}
+      href={bestRegistrationUrl(st)!}
+      target="_blank"
+      onClick={(e) => handleRegistrationClick(e, st, url)}
+      aria-label={`Follow this link to register to vote in ${STATE_NAMES[st]}`}
+    >
+      Register to vote in{" "}
+      <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
+        {st.toUpperCase()}
+      </span>
+    </a>
+  );
+};
+
+/** Renders the headline for a specific two-state selection. */
+const SelectionHeadline: React.FC<{ result: StateSelectionResult }> = ({
+  result,
+}) => {
+  let headline;
+
+  switch (result.selection) {
+    case "home":
+    case "school":
+      headline = (
+        <>
+          Your vote counts more in{" "}
+          <span className="text-point">{selectedStateName(result)}</span>.
+        </>
+      );
+      break;
+
+    case "toss-up":
+      headline = (
+        <>
+          Your vote matters in both{" "}
+          <span className="text-point">{homeStateName(result)}</span> and{" "}
+          <span className="text-point">{schoolStateName(result)}</span>.
+        </>
+      );
+      break;
+
+    case "same":
+      headline = (
+        <>
+          Your home and school states are both{" "}
+          <span className="text-point">{selectedStateName(result)}</span>.
+        </>
+      );
+      break;
+
+    default:
+      assertNever(result.selection);
+  }
+
+  return (
+    <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
+      {headline}
+    </div>
+  );
+};
+
+/** Renders the detail text for a two-state selection. */
+const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
+  result,
+}) => {
+  let message;
+  let marginMessage = null;
+
+  switch (result.selection) {
+    case "home":
+    case "school":
+      message = (
+        <>
+          In this presidential election, your vote has more impact in{" "}
+          <span className="text-point">{selectedStateName(result)}</span> than
+          in {otherStateName(result)}. {selectedStateName(result)} is a “swing
+          state” where a small number of votes can swing the election.
+        </>
+      );
+      break;
+
+    case "toss-up":
+      message = <>It’s a toss-up between your home and school states.</>;
+      break;
+
+    case "same":
+      message = (
+        <>
+          That makes things simple: vote in{" "}
+          <span className="text-point">{homeStateName(result)}</span>.
+        </>
+      );
+      break;
+  }
+
+  const election = ELECTION_2020[selectedState(result)];
+  const mp = marginPercent(election);
+  if (mp < 0.01) {
+    marginMessage = (
+      <>
+        In 2020,{" "}
+        <span className="font-black">{winner(election, CANDIDATES_2020)}</span>{" "}
+        won {selectedStateName(result)} by a razor-thin margin of{" "}
+        {formatMargin(election)} votes (&lt;1%).
+      </>
+    );
+  } else if (mp < 0.025) {
+    marginMessage = (
+      <>
+        In 2020,{" "}
+        <span className="font-black">{winner(election, CANDIDATES_2020)}</span>{" "}
+        won {selectedStateName(result)} by a slim margin of{" "}
+        {formatMargin(election)} votes (&lt;2.5%).
+      </>
+    );
+  }
+
+  return (
+    <div className="font-satoshi font-medium py-8 text-[20px] leading-[30px]">
+      {message}
+      {marginMessage && (
+        <>
+          <br />
+          <br />
+          {marginMessage}
+        </>
+      )}
+    </div>
+  );
+};
+
+const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
+  result,
+}) => {
+  const { selection, homeSt, schoolSt } = result;
+
   return (
     <div>
-      {/* Headline for selection. */}
-      <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
-        {selection !== "toss-up" && selection !== "same" && (
-          <>
-            Your vote counts more in{" "}
-            <span className="text-point">
-              {STATE_NAMES[selection === "home" ? homeSt : schoolSt]}
-            </span>
-            .
-          </>
-        )}
-        {selection === "toss-up" && (
-          <>
-            Your vote counts the same in{" "}
-            <span className="text-point">{STATE_NAMES[homeSt]}</span> and{" "}
-            <span className="text-point">{STATE_NAMES[schoolSt]}</span>.
-          </>
-        )}
-        {selection === "same" && (
-          <>
-            Your home and school states are both{" "}
-            <span className="text-point">{STATE_NAMES[homeSt]}</span>.
-          </>
-        )}
-      </div>
-      {/* Explanatory text for selection. */}
-      <p className="font-satoshi font-medium py-8 text-[20px] leading-[30px]">
-        {selection === "same" && (
-          <>
-            That makes things simple: you should vote in{" "}
-            <span className="text-point">{STATE_NAMES[homeSt]}</span>.<br />
-            <br />
-            Your home state is worth{" "}
-            <span className="font-black">{EV_2024[homeSt]}</span> electoral
-            votes in 2024. In the 2020 election,{" "}
-            <span className="font-black">
-              {winner(ELECTION_2020[homeSt], CANDIDATES_2020)}
-            </span>{" "}
-            won your state by {describeMargin(ELECTION_2020[homeSt])}.
-          </>
-        )}
-        {selection === "toss-up" && (
-          <>
-            It's a toss-up between your home and school states. Choose the state
-            that works best for you, but please remember that you can only vote
-            in one of them.
-            <br />
-            <br />
-            In 2024, <span className="text-point">
-              {STATE_NAMES[homeSt]}
-            </span>{" "}
-            is worth <span className="font-black">{EV_2024[homeSt]}</span>{" "}
-            electoral votes;{" "}
-            <span className="text-point">{STATE_NAMES[schoolSt]}</span> is worth{" "}
-            <span className="font-black">{EV_2024[schoolSt]}</span>. In the 2020
-            election,{" "}
-            <span className="font-black">
-              {winner(ELECTION_2020[homeSt], CANDIDATES_2020)}
-            </span>{" "}
-            won {STATE_NAMES[homeSt]} by {describeMargin(ELECTION_2020[homeSt])}
-            {winner(ELECTION_2020[schoolSt], CANDIDATES_2020) ===
-            winner(ELECTION_2020[homeSt], CANDIDATES_2020)
-              ? ". "
-              : ", while "}
-            <span className="font-black">
-              {winner(ELECTION_2020[schoolSt], CANDIDATES_2020)}
-            </span>
-            {winner(ELECTION_2020[schoolSt], CANDIDATES_2020) ===
-            winner(ELECTION_2020[homeSt], CANDIDATES_2020)
-              ? " also "
-              : " "}
-            won {STATE_NAMES[schoolSt]} by{" "}
-            {describeMargin(ELECTION_2020[schoolSt])}.
-          </>
-        )}
-        {selection === "home" && (
-          <>
-            You should vote in your home state of{" "}
-            <span className="text-point">{STATE_NAMES[homeSt]}</span>.
-            It&rsquo;s a battleground state where your vote has a better chance
-            of swinging the election.
-            <br />
-            <br />
-            <span className="text-point">{STATE_NAMES[homeSt]}</span> is worth{" "}
-            <span className="font-black">{EV_2024[homeSt]}</span> electoral
-            votes in 2024. In the 2020 election,{" "}
-            <span className="font-black">
-              {winner(ELECTION_2020[homeSt], CANDIDATES_2020)}
-            </span>{" "}
-            won by {describeMargin(ELECTION_2020[homeSt])}.
-          </>
-        )}
-        {selection === "school" && (
-          <>
-            You should vote in your school state,{" "}
-            <span className="text-point">{STATE_NAMES[schoolSt]}</span>.
-            It&rsquo;s a battleground state where your vote has a better chance
-            of swinging the election.
-            <br />
-            <br />
-            <span className="text-point">{STATE_NAMES[schoolSt]}</span> is worth{" "}
-            <span className="font-black">{EV_2024[schoolSt]}</span> electoral
-            votes in 2024. In the 2020 election,{" "}
-            <span className="font-black">
-              {winner(ELECTION_2020[schoolSt], CANDIDATES_2020)}
-            </span>{" "}
-            won by {describeMargin(ELECTION_2020[schoolSt])}.
-          </>
-        )}
-      </p>
+      <SelectionHeadline result={result} />
+      <SelectionDetails result={result} />
+
       {/* Action buttons for selection (share/register to vote/etc). */}
       <div className="flex flex-row justify-between items-center">
         <div className="flex-none">
-          {browserSupportsShare() ? (
-            <Share
-              className="text-black hover:text-hover cursor-pointer w-8 h-8 transition-colors duration-200"
-              aria-hidden="true"
-              onClick={defaultShare}
-            />
-          ) : (
-            " "
-          )}
+          <ShareButton />
         </div>
         <div className="flex-1 flex flex-row flex-wrap justify-end -mb-2">
           {selection !== "school" && bestRegistrationUrl(homeSt) && (
-            <a
-              className="inline-block bg-point rounded-md py-4 px-8 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2"
-              href={bestRegistrationUrl(homeSt)!}
-              target="_blank"
-              onClick={(e) =>
-                handleRegistrationClick(e, homeSt, bestRegistrationUrl(homeSt)!)
-              }
-              aria-label={`Follow this link to register to vote in ${STATE_NAMES[homeSt]}`}
-            >
-              Register to vote
-              {selection === "toss-up" && (
-                <>
-                  {" "}
-                  in{" "}
-                  <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
-                    {homeSt.toUpperCase()}
-                  </span>
-                </>
-              )}
-            </a>
+            <RegisterToVoteButton st={homeSt} />
           )}
           {selection !== "home" &&
             selection !== "same" &&
             bestRegistrationUrl(schoolSt) && (
-              <a
-                className={clsx(
-                  "inline-block bg-point rounded-md py-4 px-8 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2",
-                  selection === "toss-up" && "ml-4"
-                )}
-                href={bestRegistrationUrl(schoolSt)!}
-                target="_blank"
-                onClick={(e) =>
-                  handleRegistrationClick(
-                    e,
-                    schoolSt,
-                    bestRegistrationUrl(schoolSt)!
-                  )
-                }
-                aria-label={`Follow this link to register to vote in ${STATE_NAMES[schoolSt]}`}
-              >
-                Register to vote
-                {selection === "toss-up" && (
-                  <>
-                    {" "}
-                    in{" "}
-                    <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
-                      {schoolSt.toUpperCase()}
-                    </span>
-                  </>
-                )}
-              </a>
+              <RegisterToVoteButton
+                st={schoolSt}
+                className={selection === "toss-up" ? "ml-4" : ""}
+              />
             )}
         </div>
       </div>
@@ -387,6 +419,13 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
   );
 };
 
+//-------------------------------------------------------------------------
+//
+// Top-level component
+//
+//-------------------------------------------------------------------------
+
+/** Render our primary user interface. */
 export const More: React.FC = () => {
   const [result, setResult] = useState<StateSelectionResult | null>(null);
 

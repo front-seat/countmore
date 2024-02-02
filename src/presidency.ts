@@ -59,26 +59,6 @@ export const formatMarginPercent = (election: StateElection): string =>
     ? "<1%"
     : formatPercent(marginPercent(election));
 
-/** Describe the margin using words. */
-export const describeMargin = (election: StateElection): string => {
-  const p = marginPercent(election);
-  if (p < 0.01)
-    return `a razor-thin margin of ${formatMargin(election)} votes (<1%)`;
-  if (p < 0.05)
-    return `a slim margin of ${formatMargin(election)} votes (${formatPercent(
-      p
-    )})`;
-  if (p < 0.2)
-    return `a fair margin of ${formatMargin(election)} votes (${formatPercent(
-      p
-    )})`;
-  if (p < 0.5)
-    return `a solid margin of ${formatMargin(election)} votes (${formatPercent(
-      p
-    )})`;
-  return `a landslide of ${formatMargin(election)} votes (${formatPercent(p)})`;
-};
-
 /** 2020 Election candidates. */
 export const CANDIDATES_2020: Record<Party, string> = {
   dem: "Biden",
