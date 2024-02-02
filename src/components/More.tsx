@@ -354,6 +354,9 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
         </>
       );
       break;
+
+    default:
+      assertNever(result.selection);
   }
 
   const election = ELECTION_2020[selectedState(result)];
