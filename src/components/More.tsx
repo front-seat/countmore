@@ -120,14 +120,15 @@ const ShareButton: React.FC = () => {
 const StateDropdown: React.FC<{
   id: string;
   value: State | "";
+  label: string;
   onChange: (value: State) => void;
-}> = ({ id, value, onChange }) => (
+}> = ({ id, value, label, onChange }) => (
   <div className="flex flex-col space-y-4">
     <label
       className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px]"
       htmlFor={id}
     >
-      School state
+      {label}
     </label>
     <div className="block relative">
       <select
@@ -194,11 +195,17 @@ const SelectStates: React.FC<{
         Choose your home and school states to learn where your vote counts more:
       </h2>
 
-      <StateDropdown id="home-state" value={homeSt} onChange={setHomeSt} />
+      <StateDropdown
+        id="home-state"
+        value={homeSt}
+        onChange={setHomeSt}
+        label="Home state"
+      />
       <StateDropdown
         id="school-state"
         value={schoolSt}
         onChange={setSchoolSt}
+        label="School state"
       />
       <div className="flex flex-row justify-between items-center">
         <div className="flex-none">
