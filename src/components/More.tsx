@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, createRef } from "react";
 import clsx from "clsx";
 import { assertNever } from "../asserts";
 
@@ -191,8 +191,7 @@ const SelectStates: React.FC<{
       }}
     >
       <h2 className="font-extrabold text-[24px] leading-[33.6px]">
-        Choose your home state and school state to learn where your vote counts
-        more:
+        Choose your home and school states to learn where your vote counts more:
       </h2>
 
       <StateDropdown id="home-state" value={homeSt} onChange={setHomeSt} />
