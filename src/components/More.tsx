@@ -124,7 +124,7 @@ const StateDropdown: React.FC<{
   label: string;
   onChange: (value: State) => void;
 }> = ({ id, value, label, onChange }) => (
-  <div className="flex flex-col space-y-4">
+  <div className="flex flex-col space-y-[0.7rem]">
     <label
       className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px]"
       htmlFor={id}
@@ -134,7 +134,7 @@ const StateDropdown: React.FC<{
     <div className="block relative">
       <select
         id={id}
-        className="text-black invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-extrabold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black focus:ring-hover"
+        className="text-black pb-[0.2rem] invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-bold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black focus:ring-hover"
         value={value}
         required
         onChange={(e) => onChange(e.target.value as State)}
@@ -149,7 +149,7 @@ const StateDropdown: React.FC<{
         ))}
       </select>
       <ArrowDown
-        className="block w-8 h-8 absolute right-0 top-0 pointer-events-none text-black"
+        className="block w-6 h-6 absolute right-0 top-0 pointer-events-none text-black"
         aria-hidden="true"
       />
     </div>
@@ -163,7 +163,7 @@ const SubmitButton: React.FC<
   <div className="flex flex-row">
     <div className="flex-grow">&nbsp;</div>
     <button
-      className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[18px] px-[28px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
+      className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[15px] px-[28px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
       type="submit"
       disabled={disabled}
     >
@@ -181,7 +181,7 @@ const SelectStates: React.FC<{
 
   return (
     <form
-      className="flex flex-col space-y-12"
+      className="flex flex-col space-y-[1.7rem]"
       onSubmit={(e) => {
         e.preventDefault();
         if (!homeSt || !schoolSt) return;
@@ -192,7 +192,7 @@ const SelectStates: React.FC<{
         });
       }}
     >
-      <h2 className="font-extrabold text-[24px] leading-[33.6px]">
+      <h2 className="font-extrabold text-[24px] leading-[33.6px] pb-1">
         Choose your home and school states to learn where your vote counts more:
       </h2>
 
