@@ -157,17 +157,18 @@ const StateDropdown: React.FC<{
 );
 
 /** Renders our submit button. */
-const SubmitButton: React.FC<
-  React.PropsWithChildren<{ disabled: boolean }>
-> = ({ disabled, children }) => (
+const SubmitButton: React.FC<{ disabled: boolean }> = ({ disabled }) => (
   <div className="flex flex-row">
     <div className="flex-grow">&nbsp;</div>
     <button
-      className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[15px] px-[28px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
+      className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[23px] px-[45px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
       type="submit"
       disabled={disabled}
     >
-      <span>{children} </span>
+      <span>
+        Enter
+        <CornerDownLeft className="inline-block w-[20px] h-[20px] ml-2 -mt-[2px]" />
+      </span>
     </button>
   </div>
 );
@@ -213,12 +214,7 @@ const SelectStates: React.FC<{
           <ShareButton />
         </div>
         <div className="flex-1 flex flex-row flex-wrap justify-end -mb-2">
-          <SubmitButton disabled={!homeSt || !schoolSt}>
-            <>
-              Enter
-              <CornerDownLeft className="inline-block w-8 h-8 ml-2" />
-            </>
-          </SubmitButton>
+          <SubmitButton disabled={!homeSt || !schoolSt} />
         </div>
       </div>
     </form>
