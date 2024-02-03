@@ -161,7 +161,7 @@ const SubmitButton: React.FC<{ disabled: boolean }> = ({ disabled }) => (
   <div className="flex flex-row">
     <div className="flex-grow">&nbsp;</div>
     <button
-      className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[23px] px-[45px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
+      className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[18px] px-[33px] md:py-[23px] md:px-[45px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
       type="submit"
       disabled={disabled}
     >
