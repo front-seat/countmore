@@ -194,7 +194,7 @@ const SelectStates: React.FC<{
       }}
     >
       <h2 className="font-extrabold text-[24px] leading-[33.6px] pb-1">
-        Choose your home and school states to learn where your vote counts more:
+        Choose your home and school states to see where your vote counts more:
       </h2>
 
       <StateDropdown
