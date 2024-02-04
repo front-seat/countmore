@@ -123,8 +123,9 @@ const StateDropdown: React.FC<{
   value: State | "";
   label: string;
   onChange: (value: State) => void;
-}> = ({ id, value, label, onChange }) => (
-  <div className="flex flex-col space-y-[0.7rem]">
+  className?: string;
+}> = ({ id, value, label, onChange, className }) => (
+  <div className={clsx("flex flex-col space-y-[0.7rem]", className)}>
     <label
       className="font-satoshi text-normal font-black uppercase text-[14px] leading-[20px]"
       htmlFor={id}
@@ -194,21 +195,29 @@ const SelectStates: React.FC<{
       }}
     >
       <h2 className="font-extrabold text-[24px] leading-[33.6px] pb-1">
-        Choose your home and school states to see where your vote counts more:
+        <span className="inline sm:hidden">Let’s</span>
+        <span className="hidden sm:inline">
+          Choose your home and school states to
+        </span>{" "}
+        see where your vote counts more:
       </h2>
 
-      <StateDropdown
-        id="home-state"
-        value={homeSt}
-        onChange={setHomeSt}
-        label="Home state"
-      />
-      <StateDropdown
-        id="school-state"
-        value={schoolSt}
-        onChange={setSchoolSt}
-        label="School state"
-      />
+      <div className="flex flex-col space-y-[1.7rem] xl:flex-row xl:space-y-0 xl:space-x-[1.7rem]">
+        <StateDropdown
+          id="home-state"
+          value={homeSt}
+          onChange={setHomeSt}
+          label="Home state"
+          className="xl:flex-grow"
+        />
+        <StateDropdown
+          id="school-state"
+          value={schoolSt}
+          onChange={setSchoolSt}
+          label="School state"
+          className="xl:flex-grow"
+        />
+      </div>
       <div className="flex flex-row justify-between items-center">
         <div className="flex-none">
           <ShareButton />

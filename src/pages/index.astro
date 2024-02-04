@@ -5,7 +5,7 @@ import More from "../components/More.tsx";
 
 <Layout title="Count More">
   <main
-    class="max-w-[768px] mx-3 md:mx-auto flex flex-row flex-wrap md:pt-12 font-cabinet font-bold"
+    class="md:max-w-[768px] lg:max-w-[960px] mx-3 md:mx-auto flex flex-row flex-wrap md:pt-12 font-cabinet font-bold"
   >
     <div class="w-full md:w-1/3 flex-shrink flex flex-col">
       <p
@@ -24,17 +24,18 @@ import More from "../components/More.tsx";
       <div class="border-4 mt-4 md:m-4 border-black p-4">
         <More client:load />
       </div>
-      <div class="border-4 mt-4 md:m-4 border-transparent p-4">
+      <div class="md:border-4 mt-4 md:m-4 border-transparent p-1 md:p-4">
         <p class="font-cabinet font-extrabold text-[24px]">
           Why does my vote count more in certain states?
         </p>
         <p class="font-satoshi font-medium text-[20px] leading-[30px] pt-4">
-          Your vote counts more in a swing state because it might swing the election.
+          Your vote counts more in a swing state because it might swing the
+          election.
           <br /><br />
           Swing states are states where the election is close and a small number
-          of votes can change the outcome. For example, in 2020, Biden won the
-          state of Georgia by a razor-thin margin of just 11,779 votes — and
-          there are more than 300,000 college students in Georgia!
+          of votes can change the outcome. For example, in 2020, Biden won the state
+          of Georgia by a razor-thin margin of just 11,779 votes — and there are
+          more than 300,000 college students in Georgia!
         </p>
         <p class="font-cabinet font-extrabold text-[24px] pt-8">
           How do you decide which states count more?
@@ -47,8 +48,8 @@ import More from "../components/More.tsx";
             >2024 Cook Political Report</a
           >.<br /><br />
 
-          There are many other important House and Senate races on the ballot this November. 
-          Wherever you live, your vote counts.
+          There are many other important House and Senate races on the ballot
+          this November. Wherever you live, your vote counts.
         </p>
         <p class="font-cabinet font-extrabold text-[24px] pt-8">
           Can I legally register in my home state or school state?
@@ -64,8 +65,8 @@ import More from "../components/More.tsx";
           Are there efforts to change the electoral college?
         </p>
         <p class="font-satoshi font-medium text-[20px] leading-[30px] pt-4">
-          States can agree to award their electoral college votes to the winner of the
-          national popular vote by joining the <a
+          States can agree to award their electoral college votes to the winner
+          of the national popular vote by joining the <a
             href="https://www.nationalpopularvote.com/"
             target="_blank"
             class="underline cursor-pointer hover:text-hover transition-colors duration-200"
@@ -73,8 +74,8 @@ import More from "../components/More.tsx";
           >.
           <br /><br />
           If enough states do this, the President would be elected by popular vote
-          rather than the electoral college &mdash; and each person's vote 
-          would count the same no matter where they lived.
+          rather than the electoral college &mdash; and each person's vote would
+          count the same no matter where they lived.
         </p>
       </div>
 
