@@ -104,7 +104,7 @@ const ShareButton: React.FC = () => {
 
   return (
     <Share
-      className="text-black hover:text-hover cursor-pointer w-8 h-8 transition-colors duration-200"
+      className="text-black hover:text-gray-600 cursor-pointer w-7 h-7 transition-colors duration-200"
       aria-hidden="true"
       onClick={defaultShare}
     />
@@ -162,7 +162,7 @@ const SubmitButton: React.FC<{ disabled: boolean }> = ({ disabled }) => (
   <div className="flex flex-row">
     <div className="flex-grow">&nbsp;</div>
     <button
-      className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md py-[18px] px-[33px] md:py-[23px] md:px-[45px] font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
+      className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md px-8 py-4 font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
       type="submit"
       disabled={disabled}
     >
@@ -265,7 +265,7 @@ const RegisterToVoteButton: React.FC<{ st: State; className?: string }> = ({
   return (
     <a
       className={clsx(
-        "inline-block bg-point rounded-md py-4 px-8 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2",
+        "inline-block bg-point rounded-md px-6 py-4 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2",
         className
       )}
       href={bestRegistrationUrl(st)!}
@@ -412,7 +412,7 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
       <SelectionDetails result={result} />
 
       {/* Action buttons for selection (share/register to vote/etc). */}
-      <div className="flex flex-row justify-between items-center">
+      <div className="flex flex-row justify-between items-center space-x-2">
         <div className="flex-none">
           <ShareButton />
         </div>
