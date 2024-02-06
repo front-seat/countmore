@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, createRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
 import { assertNever } from "../asserts";
 
@@ -104,7 +104,7 @@ const ShareButton: React.FC = () => {
 
   return (
     <Share
-      className="text-black hover:text-gray-600 cursor-pointer w-7 h-7 transition-colors duration-200"
+      className="text-black md:hover:text-gray-600 cursor-pointer w-7 h-7 transition-colors duration-200"
       aria-hidden="true"
       onClick={defaultShare}
     />
@@ -162,7 +162,7 @@ const SubmitButton: React.FC<{ disabled: boolean }> = ({ disabled }) => (
   <div className="flex flex-row">
     <div className="flex-grow">&nbsp;</div>
     <button
-      className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md px-8 py-4 font-extrabold hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
+      className="bg-point disabled:bg-gray-400 inline text-white font-cabinet rounded-md px-8 py-4 font-extrabold md:hover:bg-press text-[20px] leading-[24px] transition-colors duration-200"
       type="submit"
       disabled={disabled}
     >
@@ -265,7 +265,7 @@ const RegisterToVoteButton: React.FC<{ st: State; className?: string }> = ({
   return (
     <a
       className={clsx(
-        "inline-block bg-point rounded-md px-6 py-4 text-white text-xl font-bold hover:bg-hover transition-colors duration-200 mb-2",
+        "inline-block bg-point rounded-md px-6 py-4 text-white text-xl font-bold md:hover:bg-hover transition-colors duration-200 mb-2",
         className
       )}
       href={bestRegistrationUrl(st)!}

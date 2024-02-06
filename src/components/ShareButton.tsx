@@ -35,7 +35,7 @@ const ShareButton: React.FC = () => {
 
   return (
     <button
-      className="bg-black py-4 px-8 text-white text-xl font-bold hover:bg-red-500"
+      className="bg-black py-4 px-8 text-white text-xl font-bold md:hover:bg-red-500"
       onClick={() => {
         navigator.share({
           title: "Count More",
