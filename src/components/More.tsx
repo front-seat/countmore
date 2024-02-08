@@ -451,6 +451,7 @@ export const More: React.FC = () => {
         home_state: result.homeSt.toUpperCase(),
         school_state: result.schoolSt.toUpperCase(),
         selection: result.selection,
+        swing: result.selection === "home" || result.selection === "school",
       });
     }
     setResult(result);
