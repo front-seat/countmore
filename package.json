@@ -28,6 +28,7 @@
     "typescript": "^5.3.3"
   },
   "devDependencies": {
+    "@types/facebook-pixel": "^0.0.30",
     "@types/gtag.js": "^0.0.18"
   }
 }

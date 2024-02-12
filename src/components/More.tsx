@@ -255,6 +255,17 @@ const RegisterToVoteButton: React.FC<{ st: State; className?: string }> = ({
         });
       }
 
+      // @ts-ignore-next-line  The @types/facebook-pixel don't allow for
+      // the possibility that facebook's script doesn't load properly.
+      if (window.fbq) {
+        window.fbq("track", "Lead", {
+          content_name: "register_to_vote",
+          state: st.toUpperCase(),
+          content_category: "engagement",
+          content_ids: [url],
+        });
+      }
+
       window.open(url, "_blank");
     },
     []
@@ -453,6 +464,18 @@ export const More: React.FC = () => {
         selection: result.selection,
         swing: result.selection === "home" || result.selection === "school",
       });
+
+      // @ts-ignore-next-line  The @types/facebook-pixel don't allow for
+      // the possibility that facebook's script doesn't load properly.
+      if (window.fbq) {
+        window.fbq("track", "Lead", {
+          content_name: "select_states",
+          home_state: result.homeSt.toUpperCase(),
+          school_state: result.schoolSt.toUpperCase(),
+          selection: result.selection,
+          swing: result.selection === "home" || result.selection === "school",
+        });
+      }
     }
     setResult(result);
   }, []);
