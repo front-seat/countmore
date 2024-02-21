@@ -222,7 +222,7 @@ const SelectStates: React.FC<{
         <div className="flex-none">
           <ShareButton />
         </div>
-        <div className="flex-1 flex flex-row flex-wrap justify-end -mb-2">
+        <div className="flex-1 flex flex-row flex-wrap justify-end">
           <SubmitButton disabled={!homeSt || !schoolSt} />
         </div>
       </div>
@@ -276,7 +276,7 @@ const RegisterToVoteButton: React.FC<{ st: State; className?: string }> = ({
   return (
     <a
       className={clsx(
-        "inline-block bg-point rounded-md px-6 py-4 text-white text-xl font-bold md:hover:bg-hover transition-colors duration-200 mb-2",
+        "inline-block bg-point rounded-md px-6 py-4 text-white text-xl font-extrabold md:hover:bg-hover transition-colors duration-200 mb-2",
         className
       )}
       href={bestRegistrationUrl(st)!}
@@ -333,7 +333,7 @@ const SelectionHeadline: React.FC<{ result: StateSelectionResult }> = ({
   }
 
   return (
-    <div className="font-cabinet text-[36px] leading-[43.2px] font-bold">
+    <div className="font-cabinet text-[36px] leading-[43.2px] font-extrabold">
       {headline}
     </div>
   );
@@ -399,7 +399,7 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
   }
 
   return (
-    <div className="font-satoshi font-medium py-8 text-[20px] leading-[30px]">
+    <div className="font-satoshi font-medium py-4 text-[20px] leading-[30px]">
       {message}
       {marginMessage && (
         <>
