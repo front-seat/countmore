@@ -135,7 +135,7 @@ const StateDropdown: React.FC<{
     <div className="block relative">
       <select
         id={id}
-        className="text-black pb-[0.2rem] invalid:text-gray-400 w-full rounded-none flex-grow font-cabinet font-bold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black focus:ring-hover"
+        className="text-black pb-[0.2rem] invalid:text-black/25 w-full rounded-none flex-grow font-cabinet font-bold text-[24px] leading-[32px] appearance-none bg-transparent border-b-2 border-black focus:ring-hover"
         value={value}
         required
         onChange={(e) => onChange(e.target.value as State)}
