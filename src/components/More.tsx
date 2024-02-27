@@ -258,10 +258,9 @@ const RegisterToVoteButton: React.FC<{ st: State; className?: string }> = ({
       // @ts-ignore-next-line  The @types/facebook-pixel don't allow for
       // the possibility that facebook's script doesn't load properly.
       if (window.fbq) {
-        window.fbq("track", "Lead", {
-          content_name: "register_to_vote",
+        // see https://developers.facebook.com/docs/meta-pixel/reference
+        window.fbq("trackCustom", "RegisterToVote", {
           state: st.toUpperCase(),
-          content_category: "engagement",
           content_ids: [url],
         });
       }
@@ -468,8 +467,8 @@ export const More: React.FC = () => {
       // @ts-ignore-next-line  The @types/facebook-pixel don't allow for
       // the possibility that facebook's script doesn't load properly.
       if (window.fbq) {
-        window.fbq("track", "Lead", {
-          content_name: "select_states",
+        // see https://developers.facebook.com/docs/meta-pixel/reference
+        window.fbq("trackCustom", "SelectStates", {
           home_state: result.homeSt.toUpperCase(),
           school_state: result.schoolSt.toUpperCase(),
           selection: result.selection,
