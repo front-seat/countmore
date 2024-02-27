@@ -37,6 +37,9 @@ const POWER_RANKINGS: Record<string, number> = {
 /** Return the power ranking for a state */
 const powerRanking = (st: string): number => POWER_RANKINGS[st] || 0;
 
+/** Return true if the state is one of the key battleground states. */
+export const isBattleground = (st: State): boolean => powerRanking(st) === 40;
+
 /** Which state is most impactful to vote in for the 2024 presidential election? */
 type StateSelection = "home" | "school" | "toss-up" | "same";
 
@@ -260,8 +263,9 @@ const RegisterToVoteButton: React.FC<{ st: State; className?: string }> = ({
       if (window.fbq) {
         // see https://developers.facebook.com/docs/meta-pixel/reference
         window.fbq("trackCustom", "RegisterToVote", {
+          kind: "RegisterToVote",
           state: st.toUpperCase(),
-          content_ids: [url],
+          battleground: isBattleground(st),
         });
       }
 
@@ -469,6 +473,7 @@ export const More: React.FC = () => {
       if (window.fbq) {
         // see https://developers.facebook.com/docs/meta-pixel/reference
         window.fbq("trackCustom", "SelectStates", {
+          kind: "SelectStates",
           home_state: result.homeSt.toUpperCase(),
           school_state: result.schoolSt.toUpperCase(),
           selection: result.selection,
