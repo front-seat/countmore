@@ -1,61 +1,23 @@
-import { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
-import { assertNever } from "../asserts";
+import { useCallback, useEffect, useState } from "react";
+import { assertNever } from "../utils/asserts";
 
-import { bestRegistrationUrl } from "../vote_gov";
-import { ArrowDown, CornerDownLeft, Share } from "./Icons";
-import { STATE_NAMES } from "../states";
-import type { State } from "../states";
-import { browserSupportsShare, defaultShare } from "./ShareButton";
+import { stateSelection, type StateSelection } from "../election/powerRankings";
 import {
   CANDIDATES_2020,
   ELECTION_2020,
-  winner,
   formatMargin,
   marginPercent,
-} from "../presidency";
-
-/** Countmore power rankings */
-const POWER_RANKINGS: Record<string, number> = {
-  AZ: 40,
-  GA: 40,
-  MI: 40,
-  NV: 40,
-  PA: 40,
-  WI: 40,
-  NC: 20,
-  FL: 10,
-  ME: 10,
-  MN: 10,
-  NH: 10,
-  TX: 10,
-  NE: 10,
-  // everyone else gets 0
-  // See https://docs.google.com/spreadsheets/d/1ST7LSXFAVyXs2Kbqs7MCrVyVArXOwd0VvKVL5e_14oc/edit#gid=1670074123
-};
-
-/** Return the power ranking for a state */
-const powerRanking = (st: string): number => POWER_RANKINGS[st] || 0;
-
-/** Return true if the state is one of the key battleground states. */
-export const isBattleground = (st: State): boolean => powerRanking(st) === 40;
-
-/** Which state is most impactful to vote in for the 2024 presidential election? */
-type StateSelection = "home" | "school" | "toss-up" | "same";
-
-/** Return the state selection for a state */
-const stateSelection = (homeSt: string, schoolSt: string): StateSelection => {
-  if (homeSt === schoolSt) return "same";
-  const homeRank = powerRanking(homeSt);
-  const schoolRank = powerRanking(schoolSt);
-  if (homeRank > schoolRank) {
-    return "home";
-  } else if (homeRank < schoolRank) {
-    return "school";
-  } else {
-    return "toss-up";
-  }
-};
+  winner,
+} from "../election/presidency";
+import { STATE_NAMES, type State } from "../election/states";
+import { bestRegistrationUrl } from "../election/voteGov";
+import {
+  fireClickRegisterEvent,
+  fireSelectStatesEvent,
+} from "../utils/analytics";
+import { ArrowDown, CornerDownLeft, Share } from "./Icons";
+import { browserSupportsShare, defaultShare } from "./ShareButton";
 
 /** A state selection result. */
 interface StateSelectionResult {
@@ -63,15 +25,15 @@ interface StateSelectionResult {
   selection: StateSelection;
 
   /** The home state */
-  homeSt: State;
+  homeState: State;
 
   /** The school state */
-  schoolSt: State;
+  schoolState: State;
 }
 
 /** Return the selected state for a result. */
 const selectedState = (result: StateSelectionResult): State =>
-  result.selection === "home" ? result.homeSt : result.schoolSt;
+  result.selection === "home" ? result.homeState : result.schoolState;
 
 /** Return the selected state name for a result. */
 const selectedStateName = (result: StateSelectionResult): string =>
@@ -79,7 +41,7 @@ const selectedStateName = (result: StateSelectionResult): string =>
 
 /** Return the 'other' state for a result. */
 const otherState = (result: StateSelectionResult): State =>
-  result.selection === "home" ? result.schoolSt : result.homeSt;
+  result.selection === "home" ? result.schoolState : result.homeState;
 
 /** Return the 'other' state name for a result. */
 const otherStateName = (result: StateSelectionResult): string =>
@@ -87,11 +49,11 @@ const otherStateName = (result: StateSelectionResult): string =>
 
 /** Return the 'home' state name for a result. */
 const homeStateName = (result: StateSelectionResult): string =>
-  STATE_NAMES[result.homeSt];
+  STATE_NAMES[result.homeState];
 
 /** Return the 'school' state name for a result. */
 const schoolStateName = (result: StateSelectionResult): string =>
-  STATE_NAMES[result.schoolSt];
+  STATE_NAMES[result.schoolState];
 
 /** Renders a share button if native browser sharing is available. */
 const ShareButton: React.FC = () => {
@@ -181,19 +143,19 @@ const SubmitButton: React.FC<{ disabled: boolean }> = ({ disabled }) => (
 const SelectStates: React.FC<{
   onSelect: (result: StateSelectionResult) => void;
 }> = ({ onSelect }) => {
-  const [homeSt, setHomeSt] = useState<State | "">("");
-  const [schoolSt, setSchoolSt] = useState<State | "">("");
+  const [homeState, setHomeState] = useState<State | "">("");
+  const [schoolState, setSchoolState] = useState<State | "">("");
 
   return (
     <form
       className="flex flex-col space-y-[1.7rem]"
       onSubmit={(e) => {
         e.preventDefault();
-        if (!homeSt || !schoolSt) return;
+        if (!homeState || !schoolState) return;
         onSelect({
-          selection: stateSelection(homeSt, schoolSt),
-          homeSt,
-          schoolSt,
+          selection: stateSelection(homeState, schoolState),
+          homeState,
+          schoolState,
         });
       }}
     >
@@ -208,15 +170,15 @@ const SelectStates: React.FC<{
       <div className="flex flex-col space-y-[1.7rem] xl:flex-row xl:space-y-0 xl:space-x-[1.7rem]">
         <StateDropdown
           id="home-state"
-          value={homeSt}
-          onChange={setHomeSt}
+          value={homeState}
+          onChange={setHomeState}
           label="Home state"
           className="xl:flex-grow"
         />
         <StateDropdown
           id="school-state"
-          value={schoolSt}
-          onChange={setSchoolSt}
+          value={schoolState}
+          onChange={setSchoolState}
           label="School state"
           className="xl:flex-grow"
         />
@@ -226,7 +188,7 @@ const SelectStates: React.FC<{
           <ShareButton />
         </div>
         <div className="flex-1 flex flex-row flex-wrap justify-end">
-          <SubmitButton disabled={!homeSt || !schoolSt} />
+          <SubmitButton disabled={!homeState || !schoolState} />
         </div>
       </div>
     </form>
@@ -240,35 +202,17 @@ const SelectStates: React.FC<{
 //-------------------------------------------------------------------------
 
 /** Renders a single analytics-tracked "register to vote" button. */
-const RegisterToVoteButton: React.FC<{ st: State; className?: string }> = ({
-  st,
+const RegisterToVoteButton: React.FC<{ state: State; className?: string }> = ({
+  state,
   className,
 }) => {
-  const url = bestRegistrationUrl(st);
+  const url = bestRegistrationUrl(state);
 
   const handleRegistrationClick = useCallback(
     (e: React.MouseEvent, st: State, url: string) => {
       e.preventDefault();
-
-      if (window.gtag) {
-        window.gtag("event", "register_to_vote", {
-          event_category: "engagement",
-          state: st.toUpperCase(),
-          url: url,
-        });
-      }
-
-      // @ts-ignore-next-line  The @types/facebook-pixel don't allow for
-      // the possibility that facebook's script doesn't load properly.
-      if (window.fbq) {
-        // see https://developers.facebook.com/docs/meta-pixel/reference
-        window.fbq("trackCustom", "RegisterToVote", {
-          kind: "RegisterToVote",
-          state: st.toUpperCase(),
-          battleground: isBattleground(st),
-        });
-      }
-
+      fireClickRegisterEvent({ state: st, next: "voteamerica" });
+      // TODO voteamerica
       window.open(url, "_blank");
     },
     []
@@ -282,14 +226,14 @@ const RegisterToVoteButton: React.FC<{ st: State; className?: string }> = ({
         "inline-block bg-point rounded-md px-6 py-4 text-white text-xl font-extrabold md:hover:bg-hover transition-colors duration-200 mb-2",
         className
       )}
-      href={bestRegistrationUrl(st)!}
+      href={bestRegistrationUrl(state)!}
       target="_blank"
-      onClick={(e) => handleRegistrationClick(e, st, url)}
-      aria-label={`Follow this link to register to vote in ${STATE_NAMES[st]}`}
+      onClick={(e) => handleRegistrationClick(e, state, url)}
+      aria-label={`Follow this link to register to vote in ${STATE_NAMES[state]}`}
     >
       Register to vote in{" "}
       <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
-        {st.toUpperCase()}
+        {state.toUpperCase()}
       </span>
     </a>
   );
@@ -418,7 +362,7 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
 const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
   result,
 }) => {
-  const { selection, homeSt, schoolSt } = result;
+  const { selection, homeState, schoolState } = result;
 
   return (
     <div>
@@ -431,14 +375,14 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
           <ShareButton />
         </div>
         <div className="flex-1 flex flex-row flex-wrap justify-end -mb-2">
-          {selection !== "school" && bestRegistrationUrl(homeSt) && (
-            <RegisterToVoteButton st={homeSt} />
+          {selection !== "school" && bestRegistrationUrl(homeState) && (
+            <RegisterToVoteButton state={homeState} />
           )}
           {selection !== "home" &&
             selection !== "same" &&
-            bestRegistrationUrl(schoolSt) && (
+            bestRegistrationUrl(schoolState) && (
               <RegisterToVoteButton
-                st={schoolSt}
+                state={schoolState}
                 className={selection === "toss-up" ? "ml-4" : ""}
               />
             )}
@@ -459,28 +403,7 @@ export const More: React.FC = () => {
   const [result, setResult] = useState<StateSelectionResult | null>(null);
 
   const handleSelection = useCallback((result: StateSelectionResult) => {
-    if (window.gtag) {
-      window.gtag("event", "select_states", {
-        event_category: "engagement",
-        home_state: result.homeSt.toUpperCase(),
-        school_state: result.schoolSt.toUpperCase(),
-        selection: result.selection,
-        swing: result.selection === "home" || result.selection === "school",
-      });
-
-      // @ts-ignore-next-line  The @types/facebook-pixel don't allow for
-      // the possibility that facebook's script doesn't load properly.
-      if (window.fbq) {
-        // see https://developers.facebook.com/docs/meta-pixel/reference
-        window.fbq("trackCustom", "SelectStates", {
-          kind: "SelectStates",
-          home_state: result.homeSt.toUpperCase(),
-          school_state: result.schoolSt.toUpperCase(),
-          selection: result.selection,
-          swing: result.selection === "home" || result.selection === "school",
-        });
-      }
-    }
+    fireSelectStatesEvent(result);
     setResult(result);
   }, []);
 

@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+import VoteAmericaAnalytics from "../components/VoteAmericaAnalytics";
+---
+
+<Layout title="Count More: Register To Vote" className="!bg-white">
+  {/* Add VoteAmerica+ Embed Tools To <head> section of page. */}
+  <script slot="head" src="https://cdn.voteamerica.com/embed/tools.js" async
+  ></script>
+
+  {/* Embed the primary voteamerica area */}
+  <main class="md:max-w-[768px] lg:max-w-[960px] mx-3 md:mx-auto">
+    <div
+      class="voteamerica-embed"
+      data-subscriber="countmore"
+      data-tool="register"
+    >
+    </div>
+  </main>
+
+  {/* Implement Vote America analytics watching. */}
+  <VoteAmericaAnalytics client:only="react" />
+</Layout>
