@@ -137,7 +137,7 @@ export const fireRegisterStartEvent = (event: RegisterStartEvent) => {
 };
 
 /** The three common outcomes in registration. */
-export type FinishMethod = "online" | "paper" | "ineligible";
+export type RegisterFinishMethod = "online" | "paper" | "ineligible";
 
 /**
  * The "finish registration form" event type. This event is fired when a user
@@ -145,7 +145,7 @@ export type FinishMethod = "online" | "paper" | "ineligible";
  */
 export interface RegisterFinishEvent extends RegisterUser {
   handler: RegistrationHandler;
-  method: FinishMethod;
+  method: RegisterFinishMethod;
   url?: string;
 }
 
@@ -164,7 +164,7 @@ export const fireRegisterFinishEvent = (event: RegisterFinishEvent) => {
 };
 
 /** The two common follow-up actions. */
-export type FollowUpMethod = "confirm-online" | "request-paper";
+export type RegisterFollowUpMethod = "confirm-online" | "request-paper";
 
 /**
  * The "follow up registration" event type. This event is fired when a user
@@ -172,7 +172,7 @@ export type FollowUpMethod = "confirm-online" | "request-paper";
  */
 export interface RegisterFollowUpEvent extends RegisterUser {
   handler: RegistrationHandler;
-  method: FollowUpMethod;
+  method: RegisterFollowUpMethod;
   url?: string;
 }
 
