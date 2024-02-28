@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import { isValidState, type State } from "../election/states";
 import {
   fireRegisterFinishEvent,
   fireRegisterFollowUpEvent,
@@ -138,7 +139,7 @@ const followUpMethodToCountMore = (
 };
 
 /** Listen to VoteAmerica events and manage them. */
-const listener = (event: VoteAmericaEvent) => {
+const listener = (event: VoteAmericaEvent, intended: State) => {
   const { data } = event.detail;
   switch (data.event) {
     case "action-start":
@@ -148,6 +149,7 @@ const listener = (event: VoteAmericaEvent) => {
         last_name: data.last_name,
         email: data.email,
         state: data.state,
+        intended,
         zipcode: data.zipcode,
         handler: "voteamerica",
       });
@@ -159,6 +161,7 @@ const listener = (event: VoteAmericaEvent) => {
         last_name: data.last_name,
         email: data.email,
         state: data.state,
+        intended,
         zipcode: data.zipcode,
         method: finishMethodToCountMore(data.method),
         handler: "voteamerica",
@@ -171,6 +174,7 @@ const listener = (event: VoteAmericaEvent) => {
         last_name: data.last_name,
         email: data.email,
         state: data.state,
+        intended,
         zipcode: data.zipcode,
         method: followUpMethodToCountMore(data.method),
         handler: "voteamerica",
@@ -181,16 +185,33 @@ const listener = (event: VoteAmericaEvent) => {
   }
 };
 
-const useVoteAmericaAnalytics = () => {
+const useVoteAmericaAnalytics = (intended: State) => {
+  const wrapListener = useCallback(
+    (event: VoteAmericaEvent) => listener(event, intended),
+    []
+  );
+
   useEffect(() => {
-    window.addEventListener("VoteAmericaEvent", listener as EventListener);
+    window.addEventListener("VoteAmericaEvent", wrapListener as EventListener);
     return () =>
-      window.removeEventListener("VoteAmericaEvent", listener as EventListener);
+      window.removeEventListener(
+        "VoteAmericaEvent",
+        wrapListener as EventListener
+      );
   }, []);
 };
 
 const VoteAmericaAnalytics: React.FC = () => {
-  useVoteAmericaAnalytics();
+  // get the "state" URL parameter from the current window.location
+  // and convert it to a State enum value
+  const url = new URL(window.location.href);
+  const state = url.searchParams.get("state");
+  if (!isValidState(state)) {
+    // we shouldn't be here, it seems?
+    window.location.href = "/";
+    return;
+  }
+  useVoteAmericaAnalytics(state);
   return <></>;
 };
 

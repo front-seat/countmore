@@ -54,3 +54,6 @@ export const STATE_NAMES = {
 };
 
 export type State = keyof typeof STATE_NAMES;
+
+export const isValidState = (state: string | null): state is State =>
+  state !== null && state in STATE_NAMES;
