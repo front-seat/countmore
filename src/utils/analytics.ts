@@ -103,9 +103,6 @@ export interface RegisterUser {
 
   /** The *intended* state of registration. Some forms may allow divergence. */
   intended: State;
-
-  /** The user's zip code. */
-  zipcode: string;
 }
 
 /**

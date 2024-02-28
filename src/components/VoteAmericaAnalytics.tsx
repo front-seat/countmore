@@ -147,7 +147,6 @@ const listener = (event: VoteAmericaEvent, intended: State) => {
       fireRegisterStartEvent({
         state: data.state,
         intended,
-        zipcode: data.zipcode,
         handler: "voteamerica",
       });
       break;
@@ -156,7 +155,6 @@ const listener = (event: VoteAmericaEvent, intended: State) => {
       fireRegisterFinishEvent({
         state: data.state,
         intended,
-        zipcode: data.zipcode,
         method: finishMethodToCountMore(data.method),
         handler: "voteamerica",
       });
@@ -166,7 +164,6 @@ const listener = (event: VoteAmericaEvent, intended: State) => {
       fireRegisterFollowUpEvent({
         state: data.state,
         intended,
-        zipcode: data.zipcode,
         method: followUpMethodToCountMore(data.method),
         handler: "voteamerica",
       });
