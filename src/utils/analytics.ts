@@ -98,15 +98,6 @@ export const fireClickRegisterEvent = (event: ClickRegisterEvent) => {
 
 /** Generic information about the registering user. */
 export interface RegisterUser {
-  /** The user's first name. */
-  first_name: string;
-
-  /** The user's last name. */
-  last_name: string;
-
-  /** The user's email. */
-  email: string;
-
   /** The user's state of registration. */
   state: State;
 

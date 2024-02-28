@@ -145,9 +145,6 @@ const listener = (event: VoteAmericaEvent, intended: State) => {
     case "action-start":
       console.log("RegisterStartEvent", data);
       fireRegisterStartEvent({
-        first_name: data.first_name,
-        last_name: data.last_name,
-        email: data.email,
         state: data.state,
         intended,
         zipcode: data.zipcode,
@@ -157,9 +154,6 @@ const listener = (event: VoteAmericaEvent, intended: State) => {
     case "action-finish":
       console.log("RegisterFinishEvent", data);
       fireRegisterFinishEvent({
-        first_name: data.first_name,
-        last_name: data.last_name,
-        email: data.email,
         state: data.state,
         intended,
         zipcode: data.zipcode,
@@ -170,9 +164,6 @@ const listener = (event: VoteAmericaEvent, intended: State) => {
     case "action-follow-up":
       console.log("RegisterFollowUpEvent", data);
       fireRegisterFollowUpEvent({
-        first_name: data.first_name,
-        last_name: data.last_name,
-        email: data.email,
         state: data.state,
         intended,
         zipcode: data.zipcode,
