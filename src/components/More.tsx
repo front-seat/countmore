@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
+import { type RegistrationHandler } from "../utils/analytics";
 import { assertNever } from "../utils/asserts";
 
 import { stateSelection, type StateSelection } from "../election/powerRankings";
@@ -201,21 +202,44 @@ const SelectStates: React.FC<{
 //
 //-------------------------------------------------------------------------
 
+/** Props to the register-to-vote button. */
+interface RegisterToVoteButtonProps {
+  state: State;
+  handler: RegistrationHandler;
+  className?: string;
+}
+
 /** Renders a single analytics-tracked "register to vote" button. */
-const RegisterToVoteButton: React.FC<{ state: State; className?: string }> = ({
+const RegisterToVoteButton: React.FC<RegisterToVoteButtonProps> = ({
   state,
+  handler,
   className,
 }) => {
   const url = bestRegistrationUrl(state);
 
   const handleRegistrationClick = useCallback(
-    (e: React.MouseEvent, st: State, url: string) => {
+    (e: React.MouseEvent, state: State, url: string) => {
       e.preventDefault();
-      fireClickRegisterEvent({ state: st, next: "voteamerica" });
-      // TODO voteamerica
-      window.open(url, "_blank");
+      fireClickRegisterEvent({ state, handler });
+
+      switch (handler) {
+        case "direct":
+          window.open(url, "_blank");
+          break;
+
+        case "voteamerica":
+          window.document.location.href = "/va-register/?state=" + state;
+          break;
+
+        case "rockthevote":
+          // TODO rockthevote
+          throw new Error("rockthevote not implemented");
+
+        default:
+          assertNever(handler);
+      }
     },
-    []
+    [handler]
   );
 
   if (!url) return null;
@@ -359,9 +383,10 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
   );
 };
 
-const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
-  result,
-}) => {
+const DescribeSelection: React.FC<{
+  result: StateSelectionResult;
+  handler: RegistrationHandler;
+}> = ({ result, handler }) => {
   const { selection, homeState, schoolState } = result;
 
   return (
@@ -376,13 +401,14 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
         </div>
         <div className="flex-1 flex flex-row flex-wrap justify-end -mb-2">
           {selection !== "school" && bestRegistrationUrl(homeState) && (
-            <RegisterToVoteButton state={homeState} />
+            <RegisterToVoteButton state={homeState} handler={handler} />
           )}
           {selection !== "home" &&
             selection !== "same" &&
             bestRegistrationUrl(schoolState) && (
               <RegisterToVoteButton
                 state={schoolState}
+                handler={handler}
                 className={selection === "toss-up" ? "ml-4" : ""}
               />
             )}
@@ -399,7 +425,9 @@ const DescribeSelection: React.FC<{ result: StateSelectionResult }> = ({
 //-------------------------------------------------------------------------
 
 /** Render our primary user interface. */
-export const More: React.FC = () => {
+export const More: React.FC<{ handler: RegistrationHandler }> = ({
+  handler,
+}) => {
   const [result, setResult] = useState<StateSelectionResult | null>(null);
 
   const handleSelection = useCallback((result: StateSelectionResult) => {
@@ -408,7 +436,7 @@ export const More: React.FC = () => {
   }, []);
 
   return result ? (
-    <DescribeSelection result={result} />
+    <DescribeSelection result={result} handler={handler} />
   ) : (
     <SelectStates onSelect={handleSelection} />
   );

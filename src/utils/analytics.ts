@@ -50,16 +50,25 @@ export interface SelectStatesEvent {
 /** Fire the select states event. */
 export const fireSelectStatesEvent = (event: SelectStatesEvent) => {
   const swing = event.selection === "home" || event.selection === "school";
+  // snake_case seems natural in both the google and meta contexts.
+  const snake_case = {
+    home_state: event.homeState,
+    school_state: event.schoolState,
+    selection: event.selection,
+  };
   fireGoogle("event", "select_states", {
     event_category: "engagement",
     swing,
-    ...event,
+    ...snake_case,
   });
   fireMetaCustom("SelectStates", {
     swing,
-    ...event,
+    ...snake_case,
   });
 };
+
+/** The three supported registration handlers. */
+export type RegistrationHandler = "direct" | "voteamerica" | "rockthevote";
 
 /**
  * The "click register" event type. This event is fired when a user clicks a
@@ -70,7 +79,7 @@ export interface ClickRegisterEvent {
   state: State;
 
   /** Where we plan to take them next. */
-  next: "direct" | "voteamerica" | "rockthevote";
+  handler: RegistrationHandler;
 }
 
 /** Fire the click register event. */
@@ -82,6 +91,100 @@ export const fireClickRegisterEvent = (event: ClickRegisterEvent) => {
     ...event,
   });
   fireMetaCustom("ClickRegister", {
+    battleground,
+    ...event,
+  });
+};
+
+/** Generic information about the registering user. */
+export interface RegisterUser {
+  /** The user's first name. */
+  first_name: string;
+
+  /** The user's last name. */
+  last_name: string;
+
+  /** The user's email. */
+  email: string;
+
+  /** The user's state of registration. */
+  state: State;
+
+  /** The user's zip code. */
+  zipcode: string;
+}
+
+/**
+ * The "start registration form" event type. This event is fired when a user
+ * starts filling out a registration form -- any form.
+ */
+export interface RegisterStartEvent extends RegisterUser {
+  handler: RegistrationHandler;
+}
+
+/** Fire the start registration form event. */
+export const fireRegisterStartEvent = (event: RegisterStartEvent) => {
+  const battleground = isBattleground(event.state);
+  fireGoogle("event", "register_start", {
+    event_category: "engagement",
+    battleground,
+    ...event,
+  });
+  fireMetaCustom("RegisterStart", {
+    battleground,
+    ...event,
+  });
+};
+
+/** The three common outcomes in registration. */
+export type FinishMethod = "online" | "paper" | "ineligible";
+
+/**
+ * The "finish registration form" event type. This event is fired when a user
+ * completes a registration form -- any form.
+ */
+export interface RegisterFinishEvent extends RegisterUser {
+  handler: RegistrationHandler;
+  method: FinishMethod;
+  url?: string;
+}
+
+/** Fire the finish registration form event. */
+export const fireRegisterFinishEvent = (event: RegisterFinishEvent) => {
+  const battleground = isBattleground(event.state);
+  fireGoogle("event", "register_finish", {
+    event_category: "engagement",
+    battleground,
+    ...event,
+  });
+  fireMetaCustom("RegisterFinish", {
+    battleground,
+    ...event,
+  });
+};
+
+/** The two common follow-up actions. */
+export type FollowUpMethod = "confirm-online" | "request-paper";
+
+/**
+ * The "follow up registration" event type. This event is fired when a user
+ * takes some kind of follow up action.
+ */
+export interface RegisterFollowUpEvent extends RegisterUser {
+  handler: RegistrationHandler;
+  method: FollowUpMethod;
+  url?: string;
+}
+
+/** Fire the follow up registration event. */
+export const fireRegisterFollowUpEvent = (event: RegisterFollowUpEvent) => {
+  const battleground = isBattleground(event.state);
+  fireGoogle("event", "register_follow_up", {
+    event_category: "engagement",
+    battleground,
+    ...event,
+  });
+  fireMetaCustom("RegisterFollowUp", {
     battleground,
     ...event,
   });
