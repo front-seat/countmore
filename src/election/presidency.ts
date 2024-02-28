@@ -1,5 +1,5 @@
+import { formatNumber, formatPercent } from "../utils/format";
 import type { State } from "./states";
-import { formatNumber, formatPercent } from "./format";
 
 export type Party = "dem" | "rep" | "other";
 type StateElection = {
