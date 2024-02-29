@@ -425,12 +425,14 @@ const DescribeSelection: React.FC<{
 //-------------------------------------------------------------------------
 
 /** Render our primary user interface. */
-export const More: React.FC<{ handler: RegistrationHandler }> = ({
-  handler,
-}) => {
+export const More: React.FC<{
+  handler: RegistrationHandler;
+  onSelectStates?: () => void;
+}> = ({ handler, onSelectStates }) => {
   const [result, setResult] = useState<StateSelectionResult | null>(null);
 
   const handleSelection = useCallback((result: StateSelectionResult) => {
+    onSelectStates?.();
     fireSelectStatesEvent(result);
     setResult(result);
   }, []);
