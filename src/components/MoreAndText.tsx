@@ -75,6 +75,29 @@ const MoreAndText: React.FC<{ handler: RegistrationHandler }> = ({
             vote rather than the electoral college &mdash; and each person's
             vote would count the same no matter where they lived.
           </p>
+          <p className="font-cabinet font-extrabold text-[24px] pt-8">
+            Who built this site?
+          </p>
+          <p className="font-satoshi font-medium text-[20px] leading-[30px] pt-2">
+            Hi. We're{" "}
+            <a
+              href="https://frontseat.org/"
+              target="_blank"
+              className="underline cursor-pointer md:hover:text-gray-600 transition-colors duration-200"
+            >
+              Front Seat
+            </a>
+            , a group of civic tech builders based in sunny Seattle, Washington.
+            We've built this site in partnership with{" "}
+            <a
+              href="https://voteamerica.com/"
+              target="_blank"
+              className="underline cursor-pointer md:hover:text-gray-600 transition-colors duration-200"
+            >
+              VoteAmerica
+            </a>
+            , a trusted name in online voter registration.
+          </p>
         </div>
       )}
     </>
