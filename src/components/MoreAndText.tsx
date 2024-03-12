@@ -88,7 +88,7 @@ const MoreAndText: React.FC<{ handler: RegistrationHandler }> = ({
               Front Seat
             </a>
             , a group of civic tech builders based in sunny Seattle, Washington.
-            We've built this site in partnership with{" "}
+            We built this site in partnership with{" "}
             <a
               href="https://voteamerica.com/"
               target="_blank"
