@@ -16,6 +16,19 @@ const Answer: React.FC<React.PropsWithChildren> = ({ children }) => (
   </div>
 );
 
+const Link: React.FC<React.PropsWithChildren<{ href: string }>> = ({
+  href,
+  children,
+}) => (
+  <a
+    href={href}
+    target="_blank"
+    className="underline cursor-pointer md:hover:text-gray-600 transition-colors duration-200"
+  >
+    {children}
+  </a>
+);
+
 const FrequentlyAskedQuestions: React.FC = () => (
   <div className="md:border-4 mt-4 md:m-4 border-transparent p-1 md:p-4 space-y-8">
     {/**-----------------------------------------------*/}
@@ -40,13 +53,9 @@ const FrequentlyAskedQuestions: React.FC = () => (
       <Answer>
         <p>
           Our list of swing states is from the{" "}
-          <a
-            href="https://www.cookpolitical.com/ratings/presidential-race-ratings"
-            target="_blank"
-            className="underline cursor-pointer md:hover:text-gray-600 transition-colors duration-200"
-          >
+          <Link href="https://www.cookpolitical.com/ratings/presidential-race-ratings">
             2024 Cook Political Report
-          </a>
+          </Link>
           .
         </p>
       </Answer>
@@ -70,24 +79,11 @@ const FrequentlyAskedQuestions: React.FC = () => (
       <Question>Who built this site?</Question>
       <Answer>
         <p>
-          Hi. We're{" "}
-          <a
-            href="https://frontseat.org/"
-            target="_blank"
-            className="underline cursor-pointer md:hover:text-gray-600 transition-colors duration-200"
-          >
-            Front Seat
-          </a>
-          , a group of civic tech builders based in sunny Seattle, Washington.
-          We built this site in partnership with{" "}
-          <a
-            href="https://voteamerica.com/"
-            target="_blank"
-            className="underline cursor-pointer md:hover:text-gray-600 transition-colors duration-200"
-          >
-            VoteAmerica
-          </a>
-          , a trusted name in online voter registration.
+          Hi. We're <Link href="https://frontseat.org/">Front Seat</Link>, a
+          group of civic tech builders based in sunny Seattle, Washington. We
+          built this site in partnership with{" "}
+          <Link href="https://voteamerica.com/">VoteAmerica</Link>, a trusted
+          name in online voter registration.
         </p>
       </Answer>
     </QA>
@@ -104,7 +100,7 @@ const FoldableFAQ: React.FC<{
     return (
       <div className="md:border-4 mt-4 md:m-4 border-transparent p-1 md:p-4 space-y-8">
         <p
-          className="font-cabinet font-extrabold text-[24px] cursor-pointer underline"
+          className="font-cabinet font-regular text-[24px] cursor-pointer underline md:hover:text-gray-600 transition-colors duration-200"
           onClick={onUnfold}
         >
           Frequently asked questions
