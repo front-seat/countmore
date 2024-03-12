@@ -18,7 +18,7 @@ const MoreAndText: React.FC<{ handler: RegistrationHandler }> = ({
             Why does my vote count more in certain states?
           </p>
           <p className="font-satoshi font-medium text-[20px] leading-[30px] pt-2">
-            Your vote counts more in a swing state because it might swing the
+            Your vote counts more in a swing state because it can swing the
             election.
           </p>
           <p className="font-satoshi font-medium text-[20px] leading-[30px] pt-4">
@@ -41,39 +41,13 @@ const MoreAndText: React.FC<{ handler: RegistrationHandler }> = ({
             </a>
             .
           </p>
-          <p className="font-satoshi font-medium text-[20px] leading-[30px] pt-4">
-            There are many other important House and Senate races on the ballot
-            this November. Wherever you live, your vote counts.
-          </p>
           <p className="font-cabinet font-extrabold text-[24px] pt-8">
             Can I legally register in my home state or school state?
           </p>
           <p className="font-satoshi font-medium text-[20px] leading-[30px] pt-2">
-            Yes, you can register in either state provided that you have a
-            long-term intent to live in that state. Registering to vote in a new
+            Yes, you can register in either state. Registering to vote in a new
             state will typically cancel your registration in any previous state.
-            And even though we know you’d never do this, you can’t vote in two
-            states.
-          </p>
-          <p className="font-cabinet font-extrabold text-[24px] pt-8">
-            Are there efforts to change the electoral college?
-          </p>
-          <p className="font-satoshi font-medium text-[20px] leading-[30px] pt-2">
-            States can agree to award their electoral college votes to the
-            winner of the national popular vote by joining the{" "}
-            <a
-              href="https://www.nationalpopularvote.com/"
-              target="_blank"
-              className="underline cursor-pointer md:hover:text-gray-600 transition-colors duration-200"
-            >
-              National Popular Vote Interstate Compact
-            </a>
-            .
-          </p>
-          <p className="font-satoshi font-medium text-[20px] leading-[30px] pt-2">
-            If enough states do this, the President would be elected by popular
-            vote rather than the electoral college &mdash; and each person's
-            vote would count the same no matter where they lived.
+            Voting in two states is illegal, being registered in two states is not.
           </p>
           <p className="font-cabinet font-extrabold text-[24px] pt-8">
             Who built this site?
