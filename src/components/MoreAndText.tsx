@@ -94,6 +94,27 @@ const FrequentlyAskedQuestions: React.FC = () => (
   </div>
 );
 
+const FoldableFAQ: React.FC<{
+  folded: boolean;
+  onUnfold: () => void;
+}> = ({ folded, onUnfold }) => {
+  // When folded, simply show the first <Question> as a link that can be
+  // clicked to unfold the FAQ. Otherwise, show the full FAQ.
+  if (folded) {
+    return (
+      <div className="md:border-4 mt-4 md:m-4 border-transparent p-1 md:p-4 space-y-8">
+        <p
+          className="font-cabinet font-extrabold text-[24px] cursor-pointer underline"
+          onClick={onUnfold}
+        >
+          Frequently asked questions
+        </p>
+      </div>
+    );
+  }
+  return <FrequentlyAskedQuestions />;
+};
+
 const MoreAndText: React.FC<{ handler: RegistrationHandler }> = ({
   handler,
 }) => {
@@ -104,7 +125,7 @@ const MoreAndText: React.FC<{ handler: RegistrationHandler }> = ({
       <div className="border-4 mt-4 md:m-4 border-black p-4">
         <More handler={handler} onSelectStates={() => setShowFAQ(false)} />
       </div>
-      {showFAQ && <FrequentlyAskedQuestions />}
+      <FoldableFAQ folded={!showFAQ} onUnfold={() => setShowFAQ(true)} />
     </>
   );
 };
