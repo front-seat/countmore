@@ -3,18 +3,52 @@ import Layout from "../layouts/Layout.astro";
 import VoteAmericaAnalytics from "../components/VoteAmericaAnalytics";
 ---
 
-<Layout title="Count More: Register To Vote" className="!bg-white">
+<Layout title="Count More: Register To Vote">
   {/* Add VoteAmerica+ Embed Tools To <head> section of page. */}
   <script slot="head" src="https://cdn.voteamerica.com/embed/tools.js" async
   ></script>
 
-  {/* Embed the primary voteamerica area */}
-  <main class="md:max-w-[768px] lg:max-w-[960px] mx-3 md:mx-auto py-12">
-    <div
-      class="voteamerica-embed"
-      data-subscriber="countmore"
-      data-tool="register"
-    >
+  <main>
+    <div class="bg-murk py-6 border-b-4 border-black">
+      <div class="max-w-[664px] mx-auto">
+        <div
+          class="mx-[12px] va:mx-[4px] flex flex-row space-x-10 va:space-y-0 justify-between items-center"
+        >
+          <div class="flex flex-col">
+            <p
+              class="uppercase font-black text-[10px] va:text-[12px] leading-[10px] ml-[2px]"
+            >
+              Make&nbsp;your&nbsp;vote
+            </p>
+            <h1
+              class="font-cabinet font-extrabold pt-2 text-[32px] va:text-[38px] leading-[30px] va:leading-[35px] tracking-tight cursor-pointer transition-colors duration-200"
+              onclick="window.history.back()"
+            >
+              Count<br /><span class="pl-[1px]">More</span>
+            </h1>
+          </div>
+          <p
+            class="font-satoshi font-medium text-[15px] leading-[20px] va:text-[16px] va:leading-[23px]"
+          >
+            Register to vote with our trusted partner, <a
+              href="https://voteamerica.com/"
+              target="_blank"
+              class="underline"
+              rel="noopener noreferrer">VoteAmerica</a
+            >.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* Embed the primary voteamerica area */}
+    <div class="bg-white pt-10 pb-20">
+      <div
+        class="voteamerica-embed"
+        data-subscriber="countmore"
+        data-tool="register"
+      >
+      </div>
     </div>
   </main>
 
