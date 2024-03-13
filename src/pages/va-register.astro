@@ -30,7 +30,8 @@ import VoteAmericaAnalytics from "../components/VoteAmericaAnalytics";
           <p
             class="font-satoshi font-medium text-[15px] leading-[20px] va:text-[16px] va:leading-[23px]"
           >
-            Register to vote below with our trusted partner VoteAmerica.
+            <span id="battleground-span" class="hidden"></span>Register to vote
+            below with our trusted partner VoteAmerica.
           </p>
         </div>
       </div>
@@ -50,3 +51,32 @@ import VoteAmericaAnalytics from "../components/VoteAmericaAnalytics";
   {/* Implement Vote America analytics watching. */}
   <VoteAmericaAnalytics client:only="react" />
 </Layout>
+
+<script>
+  // CONSIDER: Move this to a framework component if it gets any more complex.
+
+  // @ts-nocheck
+  function showBattlegroundMessage() {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    // see if there's a chosen=Y param
+    const chosen = params.get("chosen");
+    if (chosen) {
+      const battlegroundSpan = document.getElementById("battleground-span");
+      if (battlegroundSpan) {
+        battlegroundSpan.innerText = `Your vote counts more in ${chosen}. `;
+        battlegroundSpan.classList.remove("hidden");
+      }
+    }
+  }
+
+  function ready(fn) {
+    if (document.readyState != "loading") {
+      fn();
+    } else {
+      document.addEventListener("DOMContentLoaded", fn);
+    }
+  }
+
+  ready(showBattlegroundMessage);
+</script>

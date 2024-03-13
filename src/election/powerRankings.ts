@@ -25,6 +25,9 @@ export const powerRanking = (st: State): number => POWER_RANKINGS[st] || 0;
 /** Return true if the state is one of the key battleground states. */
 export const isBattleground = (st: State): boolean => powerRanking(st) === 40;
 
+/** Return true if the state has any power ranking. */
+export const hasPowerRanking = (st: State): boolean => powerRanking(st) !== 0;
+
 /** The possible selection outcomes. */
 export type StateSelection = "home" | "school" | "toss-up" | "same";
 

@@ -206,6 +206,9 @@ const SelectStates: React.FC<{
 interface RegisterToVoteButtonProps {
   state: State;
   handler: RegistrationHandler;
+
+  /** If true, this was a preferred state. */
+  chosen?: boolean;
   className?: string;
 }
 
@@ -213,12 +216,13 @@ interface RegisterToVoteButtonProps {
 const RegisterToVoteButton: React.FC<RegisterToVoteButtonProps> = ({
   state,
   handler,
+  chosen,
   className,
 }) => {
   const url = bestRegistrationUrl(state);
 
   const handleRegistrationClick = useCallback(
-    (e: React.MouseEvent, state: State, url: string) => {
+    (e: React.MouseEvent, state: State, url: string, chosen?: boolean) => {
       e.preventDefault();
       fireClickRegisterEvent({ state, handler });
 
@@ -228,7 +232,10 @@ const RegisterToVoteButton: React.FC<RegisterToVoteButtonProps> = ({
           break;
 
         case "voteamerica":
-          window.document.location.href = "/va-register/?state=" + state;
+          window.document.location.href =
+            "/va-register/?state=" +
+            state +
+            (chosen ? `&chosen=${STATE_NAMES[state]}` : "");
           break;
 
         case "rockthevote":
@@ -252,7 +259,7 @@ const RegisterToVoteButton: React.FC<RegisterToVoteButtonProps> = ({
       )}
       href={bestRegistrationUrl(state)!}
       target="_blank"
-      onClick={(e) => handleRegistrationClick(e, state, url)}
+      onClick={(e) => handleRegistrationClick(e, state, url, chosen)}
       aria-label={`Follow this link to register to vote in ${STATE_NAMES[state]}`}
     >
       Register to vote in{" "}
@@ -401,7 +408,11 @@ const DescribeSelection: React.FC<{
         </div>
         <div className="flex-1 flex flex-row flex-wrap justify-end -mb-2">
           {selection !== "school" && bestRegistrationUrl(homeState) && (
-            <RegisterToVoteButton state={homeState} handler={handler} />
+            <RegisterToVoteButton
+              state={homeState}
+              handler={handler}
+              chosen={selection !== "toss-up" && selection !== "same"}
+            />
           )}
           {selection !== "home" &&
             selection !== "same" &&
@@ -409,6 +420,7 @@ const DescribeSelection: React.FC<{
               <RegisterToVoteButton
                 state={schoolState}
                 handler={handler}
+                chosen={selection !== "toss-up"}
                 className={selection === "toss-up" ? "ml-4" : ""}
               />
             )}
