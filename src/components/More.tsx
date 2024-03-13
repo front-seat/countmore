@@ -3,7 +3,11 @@ import { useCallback, useEffect, useState } from "react";
 import { type RegistrationHandler } from "../utils/analytics";
 import { assertNever } from "../utils/asserts";
 
-import { stateSelection, type StateSelection } from "../election/powerRankings";
+import {
+  isBattleground,
+  stateSelection,
+  type StateSelection,
+} from "../election/powerRankings";
 import {
   CANDIDATES_2020,
   ELECTION_2020,
@@ -298,12 +302,21 @@ const SelectionHeadline: React.FC<{ result: StateSelectionResult }> = ({
       break;
 
     case "same":
-      headline = (
-        <>
-          Your home and school states are both{" "}
-          <span className="text-point">{selectedStateName(result)}</span>.
-        </>
-      );
+      if (isBattleground(result.homeState)) {
+        headline = (
+          <>
+            <span className="text-point">{homeStateName(result)}</span> votes
+            count more.
+          </>
+        );
+      } else {
+        headline = (
+          <>
+            Your home and school states are both{" "}
+            <span className="text-point">{selectedStateName(result)}</span>.
+          </>
+        );
+      }
       break;
 
     default:
@@ -411,7 +424,7 @@ const DescribeSelection: React.FC<{
             <RegisterToVoteButton
               state={homeState}
               handler={handler}
-              chosen={selection !== "toss-up" && selection !== "same"}
+              chosen={selection !== "toss-up"}
             />
           )}
           {selection !== "home" &&
