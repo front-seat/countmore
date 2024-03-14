@@ -330,6 +330,23 @@ const SelectionHeadline: React.FC<{ result: StateSelectionResult }> = ({
   );
 };
 
+/** Renders a detailed description of the power ranking. */
+const PowerRankingDetails: React.FC<{ result: StateSelectionResult }> = ({
+  result,
+}) => {
+  if (isBattleground(selectedState(result))) {
+    return (
+      <>
+        is a “swing state” where a small number of votes can swing the election
+      </>
+    );
+  } else {
+    return (
+      <>is a slightly leaning state where your vote may have more impact</>
+    );
+  }
+};
+
 /** Renders the detail text for a two-state selection. */
 const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
   result,
@@ -344,8 +361,8 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
         <>
           In this presidential election, your vote has more impact in{" "}
           <span className="text-point">{selectedStateName(result)}</span> than
-          in {otherStateName(result)}. {selectedStateName(result)} is a “swing
-          state” where a small number of votes can swing the election.
+          in {otherStateName(result)}. {selectedStateName(result)}{" "}
+          {<PowerRankingDetails result={result} />}.
         </>
       );
       break;
