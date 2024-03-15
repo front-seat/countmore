@@ -341,7 +341,7 @@ const PowerRankingDetails: React.FC<{ result: StateSelectionResult }> = ({
       </>
     );
   } else {
-    return <>is a “leaning state” where your vote may have more impact</>;
+    return <>is a state where your vote may have more impact</>;
   }
 };
 
