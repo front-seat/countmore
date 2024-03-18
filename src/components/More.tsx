@@ -208,11 +208,18 @@ const SelectStates: React.FC<{
 
 /** Props to the register-to-vote button. */
 interface RegisterToVoteButtonProps {
-  state: State;
   handler: RegistrationHandler;
+  behavior: "register" | "verify";
+
+  /** The specific state to register in. */
+  state: State;
 
   /** If true, this was a preferred state. */
   chosen?: boolean;
+
+  /** If true, hide the state name in the button. */
+  hideState?: boolean;
+
   className?: string;
 }
 
@@ -220,24 +227,27 @@ interface RegisterToVoteButtonProps {
 const RegisterToVoteButton: React.FC<RegisterToVoteButtonProps> = ({
   state,
   handler,
+  behavior,
   chosen,
+  hideState,
   className,
 }) => {
-  const url = bestRegistrationUrl(state);
-
   const handleRegistrationClick = useCallback(
-    (e: React.MouseEvent, state: State, url: string, chosen?: boolean) => {
+    (e: React.MouseEvent, state: State, chosen?: boolean) => {
       e.preventDefault();
       fireClickRegisterEvent({ state, handler });
 
       switch (handler) {
         case "direct":
+          const url = bestRegistrationUrl(state);
+          if (!url) return;
           window.open(url, "_blank");
           break;
 
         case "voteamerica":
+          const path = behavior === "register" ? "/va-register" : "/va-verify";
           window.document.location.href =
-            "/va-register/?state=" +
+            `${path}/?state=` +
             state +
             (chosen ? `&chosen=${STATE_NAMES[state]}` : "");
           break;
@@ -253,23 +263,27 @@ const RegisterToVoteButton: React.FC<RegisterToVoteButtonProps> = ({
     [handler]
   );
 
-  if (!url) return null;
-
   return (
     <a
       className={clsx(
         "inline-block bg-point rounded-md px-6 py-4 text-white text-xl font-extrabold md:hover:bg-hover transition-colors duration-200 mb-2",
         className
       )}
-      href={bestRegistrationUrl(state)!}
+      href="#"
       target="_blank"
-      onClick={(e) => handleRegistrationClick(e, state, url, chosen)}
+      onClick={(e) => handleRegistrationClick(e, state, chosen)}
       aria-label={`Follow this link to register to vote in ${STATE_NAMES[state]}`}
     >
-      Register to vote in{" "}
-      <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
-        {state.toUpperCase()}
-      </span>
+      {behavior === "register" ? "Register to vote" : "Verify registration"}
+      {!hideState && (
+        <>
+          {" "}
+          in{" "}
+          <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
+            {state.toUpperCase()}
+          </span>
+        </>
+      )}
     </a>
   );
 };
@@ -422,7 +436,65 @@ const DescribeSelection: React.FC<{
   result: StateSelectionResult;
   handler: RegistrationHandler;
 }> = ({ result, handler }) => {
-  const { selection, homeState, schoolState } = result;
+  const { selection, homeState } = result;
+
+  let buttons;
+  if (selection === "toss-up") {
+    // Show one generic register button + one generic verify button
+    buttons = (
+      <>
+        <RegisterToVoteButton
+          hideState
+          state={homeState}
+          handler={handler}
+          behavior="verify"
+        />
+        <RegisterToVoteButton
+          hideState
+          state={homeState}
+          handler={handler}
+          behavior="register"
+          className="ml-4"
+        />
+      </>
+    );
+  } else if (selection === "same") {
+    // Show one state-specific register button and one state-specific verify
+    buttons = (
+      <>
+        <RegisterToVoteButton
+          state={homeState}
+          handler={handler}
+          behavior="verify"
+        />
+        <RegisterToVoteButton
+          state={homeState}
+          handler={handler}
+          behavior="register"
+          className="ml-4"
+        />
+      </>
+    );
+  } else {
+    // Show one state-specific register button and one state-specific verify
+    buttons = (
+      <>
+        <RegisterToVoteButton
+          state={selectedState(result)}
+          handler={handler}
+          behavior="verify"
+          chosen={true}
+        />
+        <RegisterToVoteButton
+          state={selectedState(result)}
+          handler={handler}
+          behavior="register"
+          chosen={true}
+          className="ml-4"
+        />
+      </>
+    );
+  }
 
   return (
     <div>
@@ -435,23 +507,7 @@ const DescribeSelection: React.FC<{
           <ShareButton />
         </div>
         <div className="flex-1 flex flex-row flex-wrap justify-end -mb-2">
-          {selection !== "school" && bestRegistrationUrl(homeState) && (
-            <RegisterToVoteButton
-              state={homeState}
-              handler={handler}
-              chosen={selection !== "toss-up"}
-            />
-          )}
-          {selection !== "home" &&
-            selection !== "same" &&
-            bestRegistrationUrl(schoolState) && (
-              <RegisterToVoteButton
-                state={schoolState}
-                handler={handler}
-                chosen={selection !== "toss-up"}
-                className={selection === "toss-up" ? "ml-4" : ""}
-              />
-            )}
+          {buttons}
         </div>
       </div>
     </div>
