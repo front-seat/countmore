@@ -96,8 +96,34 @@ export const fireClickRegisterEvent = (event: ClickRegisterEvent) => {
   });
 };
 
+/**
+ * The "click to verify" event type. This event is fired when a user clicks a
+ * 'verify registration' button.
+ */
+export interface ClickVerifyEvent {
+  /** The state the user clicked to verify in. */
+  state: State;
+
+  /** Where we plan to take them next. */
+  handler: RegistrationHandler;
+}
+
+/** Fire the click to verify event. */
+export const fireClickVerifyEvent = (event: ClickVerifyEvent) => {
+  const battleground = isBattleground(event.state);
+  fireGoogle("event", "click_verify", {
+    event_category: "engagement",
+    battleground,
+    ...event,
+  });
+  fireMetaCustom("ClickVerify", {
+    battleground,
+    ...event,
+  });
+};
+
 /** Generic information about the registering user. */
-export interface RegisterUser {
+export interface VoterUser {
   /** The user's state of registration. */
   state: State;
 
@@ -109,7 +135,7 @@ export interface RegisterUser {
  * The "start registration form" event type. This event is fired when a user
  * starts filling out a registration form -- any form.
  */
-export interface RegisterStartEvent extends RegisterUser {
+export interface RegisterStartEvent extends VoterUser {
   handler: RegistrationHandler;
 }
 
@@ -127,6 +153,28 @@ export const fireRegisterStartEvent = (event: RegisterStartEvent) => {
   });
 };
 
+/**
+ * The "start verify form" event type. This event is fired when a user
+ * starts filling out a verify form -- any form.
+ */
+export interface VerifyStartEvent extends VoterUser {
+  handler: RegistrationHandler;
+}
+
+/** Fire the start verify form event. */
+export const fireVerifyStartEvent = (event: VerifyStartEvent) => {
+  const battleground = isBattleground(event.state);
+  fireGoogle("event", "verify_start", {
+    event_category: "engagement",
+    battleground,
+    ...event,
+  });
+  fireMetaCustom("VerifyStart", {
+    battleground,
+    ...event,
+  });
+};
+
 /** The three common outcomes in registration. */
 export type RegisterFinishMethod = "online" | "paper" | "ineligible";
 
@@ -134,7 +182,7 @@ export type RegisterFinishMethod = "online" | "paper" | "ineligible";
  * The "finish registration form" event type. This event is fired when a user
  * completes a registration form -- any form.
  */
-export interface RegisterFinishEvent extends RegisterUser {
+export interface RegisterFinishEvent extends VoterUser {
   handler: RegistrationHandler;
   method: RegisterFinishMethod;
   url?: string;
@@ -154,6 +202,28 @@ export const fireRegisterFinishEvent = (event: RegisterFinishEvent) => {
   });
 };
 
+/**
+ * The "finish verify form" event type. This event is fired when a user
+ * completes a verify form -- any form.
+ */
+export interface VerifyFinishEvent extends VoterUser {
+  handler: RegistrationHandler;
+}
+
+/** Fire the finish verify form event. */
+export const fireVerifyFinishEvent = (event: VerifyFinishEvent) => {
+  const battleground = isBattleground(event.state);
+  fireGoogle("event", "verify_finish", {
+    event_category: "engagement",
+    battleground,
+    ...event,
+  });
+  fireMetaCustom("VerifyFinish", {
+    battleground,
+    ...event,
+  });
+};
+
 /** The two common follow-up actions. */
 export type RegisterFollowUpMethod = "confirm-online" | "request-paper";
 
@@ -161,7 +231,7 @@ export type RegisterFollowUpMethod = "confirm-online" | "request-paper";
  * The "follow up registration" event type. This event is fired when a user
  * takes some kind of follow up action.
  */
-export interface RegisterFollowUpEvent extends RegisterUser {
+export interface RegisterFollowUpEvent extends VoterUser {
   handler: RegistrationHandler;
   method: RegisterFollowUpMethod;
   url?: string;

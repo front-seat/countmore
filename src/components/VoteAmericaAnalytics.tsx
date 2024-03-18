@@ -4,9 +4,11 @@ import {
   fireRegisterFinishEvent,
   fireRegisterFollowUpEvent,
   fireRegisterStartEvent,
+  fireVerifyFinishEvent,
+  fireVerifyStartEvent,
   type RegisterFinishMethod,
   type RegisterFollowUpMethod,
-  type RegisterUser,
+  type VoterUser,
 } from "../utils/analytics";
 import { assertNever } from "../utils/asserts";
 
@@ -16,9 +18,20 @@ import { assertNever } from "../utils/asserts";
  *
  * See https://docs.voteamerica.com/software/events/#register-tool
  */
-interface RegisterStartEvent extends RegisterUser {
+interface RegisterStartEvent extends VoterUser {
   event: "action-start";
   tool: "register";
+}
+
+/**
+ * VoteAmerica "start verify" event, when a user submits the Verify tool's
+ * intake form.
+ *
+ * See https://docs.voteamerica.com/software/events/#verify-tool
+ */
+interface VerifyStartEvent extends VoterUser {
+  event: "action-start";
+  tool: "verify";
 }
 
 /** Details about what took place during the VA+ form flow. */
@@ -50,7 +63,7 @@ type FinishMethod =
  *
  * See https://docs.voteamerica.com/software/events/#register-tool
  */
-interface RegisterFinishEvent extends RegisterUser {
+interface RegisterFinishEvent extends VoterUser {
   event: "action-finish";
   tool: "register";
 
@@ -59,6 +72,17 @@ interface RegisterFinishEvent extends RegisterUser {
 
   /** URL that the user was directed to, if any. */
   url?: string;
+}
+
+/**
+ * VoteAmerica "finish verify" event, when the user has completed the
+ * full VoteAmerica form flow.
+ *
+ * See https://docs.voteamerica.com/software/events/#verify-tool
+ */
+interface VerifyFinishEvent extends VoterUser {
+  event: "action-finish";
+  tool: "verify";
 }
 
 /** Details about user follow-up actions, well after the VA+ form flow. */
@@ -81,7 +105,7 @@ type FollowUpMethod =
  *
  * See https://docs.voteamerica.com/software/events/#register-tool
  */
-interface RegisterFollowUpEvent extends RegisterUser {
+interface RegisterFollowUpEvent extends VoterUser {
   event: "action-follow-up";
   tool: "register";
 
@@ -98,9 +122,12 @@ type RegisterEvent =
   | RegisterFinishEvent
   | RegisterFollowUpEvent;
 
+/** All verification event types. */
+type VerifyEvent = VerifyStartEvent | VerifyFinishEvent;
+
 /** The VoteAmerica event type. */
 type VoteAmericaEvent = CustomEvent<{
-  data: RegisterEvent;
+  data: RegisterEvent | VerifyEvent;
   embedEl: HTMLDivElement;
   iFrame: HTMLIFrameElement;
 }>;
@@ -138,9 +165,8 @@ const followUpMethodToCountMore = (
   }
 };
 
-/** Listen to VoteAmerica events and manage them. */
-const listener = (event: VoteAmericaEvent, intended: State) => {
-  const { data } = event.detail;
+/** Listen to VoteAmerica reigster tool events. */
+const registerListener = (data: RegisterEvent, intended: State) => {
   switch (data.event) {
     case "action-start":
       console.log("RegisterStartEvent", data);
@@ -167,6 +193,45 @@ const listener = (event: VoteAmericaEvent, intended: State) => {
         method: followUpMethodToCountMore(data.method),
         handler: "voteamerica",
       });
+      break;
+    default:
+      assertNever(data);
+  }
+};
+
+/** Listen to VoteAmerica verify tool events. */
+const verifyListener = (data: VerifyEvent, intended: State) => {
+  switch (data.event) {
+    case "action-start":
+      console.log("VerifyStartEvent", data);
+      fireVerifyStartEvent({
+        state: data.state,
+        intended,
+        handler: "voteamerica",
+      });
+      break;
+    case "action-finish":
+      console.log("VerifyFinishEvent", data);
+      fireVerifyFinishEvent({
+        state: data.state,
+        intended,
+        handler: "voteamerica",
+      });
+      break;
+    default:
+      assertNever(data);
+  }
+};
+
+/** Listen to VoteAmerica events and manage them. */
+const listener = (event: VoteAmericaEvent, intended: State) => {
+  const { data } = event.detail;
+  switch (data.tool) {
+    case "register":
+      registerListener(data, intended);
+      break;
+    case "verify":
+      verifyListener(data, intended);
       break;
     default:
       assertNever(data);
