@@ -19,6 +19,7 @@ import { STATE_NAMES, type State } from "../election/states";
 import { bestRegistrationUrl } from "../election/voteGov";
 import {
   fireClickRegisterEvent,
+  fireClickVerifyEvent,
   fireSelectStatesEvent,
 } from "../utils/analytics";
 import { ArrowDown, CornerDownLeft, Share } from "./Icons";
@@ -235,7 +236,11 @@ const RegisterToVoteButton: React.FC<RegisterToVoteButtonProps> = ({
   const handleRegistrationClick = useCallback(
     (e: React.MouseEvent, state: State, chosen?: boolean) => {
       e.preventDefault();
-      fireClickRegisterEvent({ state, handler });
+      if (behavior === "verify") {
+        fireClickVerifyEvent({ state, handler });
+      } else {
+        fireClickRegisterEvent({ state, handler });
+      }
 
       switch (handler) {
         case "direct":
