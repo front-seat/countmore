@@ -218,9 +218,6 @@ interface RegisterToVoteButtonProps {
   /** If true, this was a preferred state. */
   chosen?: boolean;
 
-  /** If true, hide the state name in the button. */
-  hideState?: boolean;
-
   className?: string;
 }
 
@@ -230,7 +227,6 @@ const RegisterToVoteButton: React.FC<RegisterToVoteButtonProps> = ({
   handler,
   behavior,
   chosen,
-  hideState,
   className,
 }) => {
   const handleRegistrationClick = useCallback(
@@ -279,16 +275,7 @@ const RegisterToVoteButton: React.FC<RegisterToVoteButtonProps> = ({
       onClick={(e) => handleRegistrationClick(e, state, chosen)}
       aria-label={`Follow this link to register to vote in ${STATE_NAMES[state]}`}
     >
-      {behavior === "register" ? "Register to vote" : "Verify registration"}
-      {!hideState && (
-        <>
-          {" "}
-          in{" "}
-          <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
-            {state.toUpperCase()}
-          </span>
-        </>
-      )}
+      {behavior === "register" ? "Register to vote" : "Check your registration"}
     </a>
   );
 };
@@ -444,27 +431,8 @@ const DescribeSelection: React.FC<{
   const { selection, homeState } = result;
 
   let buttons;
-  if (selection === "toss-up") {
+  if (selection === "toss-up" || selection === "same") {
     // Show one generic register button + one generic verify button
-    buttons = (
-      <>
-        <RegisterToVoteButton
-          hideState
-          state={homeState}
-          handler={handler}
-          behavior="verify"
-        />
-        <RegisterToVoteButton
-          hideState
-          state={homeState}
-          handler={handler}
-          behavior="register"
-          className="ml-4"
-        />
-      </>
-    );
-  } else if (selection === "same") {
-    // Show one state-specific register button and one state-specific verify
     buttons = (
       <>
         <RegisterToVoteButton
