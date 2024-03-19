@@ -218,9 +218,6 @@ interface RegisterToVoteButtonProps {
   /** If true, this was a preferred state. */
   chosen?: boolean;
 
-  /** If true, hide the state name in the button. */
-  hideState?: boolean;
-
   className?: string;
 }
 
@@ -230,7 +227,6 @@ const RegisterToVoteButton: React.FC<RegisterToVoteButtonProps> = ({
   handler,
   behavior,
   chosen,
-  hideState,
   className,
 }) => {
   const handleRegistrationClick = useCallback(
@@ -279,16 +275,7 @@ const RegisterToVoteButton: React.FC<RegisterToVoteButtonProps> = ({
       onClick={(e) => handleRegistrationClick(e, state, chosen)}
       aria-label={`Follow this link to register to vote in ${STATE_NAMES[state]}`}
     >
-      {behavior === "register" ? "Register to vote" : "Verify registration"}
-      {!hideState && (
-        <>
-          {" "}
-          in{" "}
-          <span className="font-cabinet inline-block w-8 min-w-8 max-w-8">
-            {state.toUpperCase()}
-          </span>
-        </>
-      )}
+      {behavior === "register" ? "Register to vote" : "Check your registration"}
     </a>
   );
 };
@@ -349,21 +336,6 @@ const SelectionHeadline: React.FC<{ result: StateSelectionResult }> = ({
   );
 };
 
-/** Renders a detailed description of the power ranking. */
-const PowerRankingDetails: React.FC<{ result: StateSelectionResult }> = ({
-  result,
-}) => {
-  if (isBattleground(selectedState(result))) {
-    return (
-      <>
-        is a “swing state” where a small number of votes can swing the election
-      </>
-    );
-  } else {
-    return <>is a “leaning state” where your vote can have more impact</>;
-  }
-};
-
 /** Renders the detail text for a two-state selection. */
 const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
   result,
@@ -378,8 +350,8 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
         <>
           In this presidential election, your vote has more impact in{" "}
           <span className="text-point">{selectedStateName(result)}</span> than
-          in {otherStateName(result)}. {selectedStateName(result)}{" "}
-          {<PowerRankingDetails result={result} />}.
+          in {otherStateName(result)}. {selectedStateName(result)} is a “swing
+          state” where a small number of votes can swing the election.
         </>
       );
       break;
@@ -389,12 +361,21 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
       break;
 
     case "same":
-      message = (
-        <>
-          That makes things simple: vote in{" "}
-          <span className="text-point">{homeStateName(result)}</span>.
-        </>
-      );
+      if (isBattleground(result.homeState)) {
+        message = (
+          <>
+            Your vote counts more in{" "}
+            <span className="text-point">{homeStateName(result)}</span>.
+          </>
+        );
+      } else {
+        message = (
+          <>
+            That makes things simple: vote in{" "}
+            <span className="text-point">{homeStateName(result)}</span>.
+          </>
+        );
+      }
       break;
 
     default:
@@ -409,7 +390,7 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
         In 2020,{" "}
         <span className="font-black">{winner(election, CANDIDATES_2020)}</span>{" "}
         won {selectedStateName(result)} by a razor-thin margin of{" "}
-        {formatMargin(election)} votes (&lt;1%).
+        {formatMargin(election)} votes.
       </>
     );
   } else if (mp < 0.025) {
@@ -418,7 +399,7 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
         In 2020,{" "}
         <span className="font-black">{winner(election, CANDIDATES_2020)}</span>{" "}
         won {selectedStateName(result)} by a slim margin of{" "}
-        {formatMargin(election)} votes (&lt;2.5%).
+        {formatMargin(election)} votes.
       </>
     );
   }
@@ -444,39 +425,22 @@ const DescribeSelection: React.FC<{
   const { selection, homeState } = result;
 
   let buttons;
-  if (selection === "toss-up") {
+  if (selection === "toss-up" || selection === "same") {
     // Show one generic register button + one generic verify button
     buttons = (
       <>
         <RegisterToVoteButton
-          hideState
           state={homeState}
           handler={handler}
           behavior="verify"
-        />
-        <RegisterToVoteButton
-          hideState
-          state={homeState}
-          handler={handler}
-          behavior="register"
-          className="ml-4"
-        />
-      </>
-    );
-  } else if (selection === "same") {
-    // Show one state-specific register button and one state-specific verify
-    buttons = (
-      <>
-        <RegisterToVoteButton
-          state={homeState}
-          handler={handler}
-          behavior="verify"
+          chosen={isBattleground(homeState)}
         />
         <RegisterToVoteButton
           state={homeState}
           handler={handler}
           behavior="register"
           className="ml-4"
+          chosen={isBattleground(homeState)}
         />
       </>
     );
