@@ -336,21 +336,6 @@ const SelectionHeadline: React.FC<{ result: StateSelectionResult }> = ({
   );
 };
 
-/** Renders a detailed description of the power ranking. */
-const PowerRankingDetails: React.FC<{ result: StateSelectionResult }> = ({
-  result,
-}) => {
-  if (isBattleground(selectedState(result))) {
-    return (
-      <>
-        is a “swing state” where a small number of votes can swing the election
-      </>
-    );
-  } else {
-    return <>is a “leaning state” where your vote can have more impact</>;
-  }
-};
-
 /** Renders the detail text for a two-state selection. */
 const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
   result,
@@ -365,8 +350,8 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
         <>
           In this presidential election, your vote has more impact in{" "}
           <span className="text-point">{selectedStateName(result)}</span> than
-          in {otherStateName(result)}. {selectedStateName(result)}{" "}
-          {<PowerRankingDetails result={result} />}.
+          in {otherStateName(result)}. {selectedStateName(result)} is a “swing
+          state” where a small number of votes can swing the election.
         </>
       );
       break;
@@ -376,12 +361,21 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
       break;
 
     case "same":
-      message = (
-        <>
-          That makes things simple: vote in{" "}
-          <span className="text-point">{homeStateName(result)}</span>.
-        </>
-      );
+      if (isBattleground(result.homeState)) {
+        message = (
+          <>
+            Your vote counts more in{" "}
+            <span className="text-point">{homeStateName(result)}</span>.
+          </>
+        );
+      } else {
+        message = (
+          <>
+            That makes things simple: vote in{" "}
+            <span className="text-point">{homeStateName(result)}</span>.
+          </>
+        );
+      }
       break;
 
     default:
@@ -396,7 +390,7 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
         In 2020,{" "}
         <span className="font-black">{winner(election, CANDIDATES_2020)}</span>{" "}
         won {selectedStateName(result)} by a razor-thin margin of{" "}
-        {formatMargin(election)} votes (&lt;1%).
+        {formatMargin(election)} votes.
       </>
     );
   } else if (mp < 0.025) {
@@ -405,7 +399,7 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
         In 2020,{" "}
         <span className="font-black">{winner(election, CANDIDATES_2020)}</span>{" "}
         won {selectedStateName(result)} by a slim margin of{" "}
-        {formatMargin(election)} votes (&lt;2.5%).
+        {formatMargin(election)} votes.
       </>
     );
   }
@@ -439,12 +433,14 @@ const DescribeSelection: React.FC<{
           state={homeState}
           handler={handler}
           behavior="verify"
+          chosen={isBattleground(homeState)}
         />
         <RegisterToVoteButton
           state={homeState}
           handler={handler}
           behavior="register"
           className="ml-4"
+          chosen={isBattleground(homeState)}
         />
       </>
     );

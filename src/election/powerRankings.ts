@@ -9,12 +9,12 @@ const POWER_RANKINGS: Record<string, number> = {
   PA: 40,
   WI: 40,
   NC: 20,
-  FL: 10,
-  ME: 10,
-  MN: 10,
-  NH: 10,
-  TX: 10,
-  NE: 10,
+  // FL: 10,
+  // ME: 10,
+  // MN: 10,
+  // NH: 10,
+  // TX: 10,
+  // NE: 10,
   // everyone else gets 0
   // See https://docs.google.com/spreadsheets/d/1ST7LSXFAVyXs2Kbqs7MCrVyVArXOwd0VvKVL5e_14oc/edit#gid=1670074123
 };
@@ -23,10 +23,7 @@ const POWER_RANKINGS: Record<string, number> = {
 export const powerRanking = (st: State): number => POWER_RANKINGS[st] || 0;
 
 /** Return true if the state is one of the key battleground states. */
-export const isBattleground = (st: State): boolean => powerRanking(st) === 40;
-
-/** Return true if the state has any power ranking. */
-export const hasPowerRanking = (st: State): boolean => powerRanking(st) !== 0;
+export const isBattleground = (st: State): boolean => powerRanking(st) > 0;
 
 /** The possible selection outcomes. */
 export type StateSelection = "home" | "school" | "toss-up" | "same";
