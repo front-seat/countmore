@@ -74,7 +74,7 @@ const { title, action } = Astro.props;
     if (chosen) {
       const battlegroundSpan = document.getElementById("battleground-span");
       if (battlegroundSpan) {
-        battlegroundSpan.innerText = `Your vote counts more in ${chosen}. `;
+        battlegroundSpan.innerHTML = `Your vote counts more in ${chosen}.<br /><br />`;
         battlegroundSpan.classList.remove("hidden");
       }
     }

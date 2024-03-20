@@ -311,15 +311,15 @@ const SelectionHeadline: React.FC<{ result: StateSelectionResult }> = ({
       if (isBattleground(result.homeState)) {
         headline = (
           <>
-            <span className="text-point">{homeStateName(result)}</span> votes
-            count more.
+            Your vote counts more in{" "}
+            <span className="text-point">{homeStateName(result)}</span>.
           </>
         );
       } else {
         headline = (
           <>
             Your home and school states are both{" "}
-            <span className="text-point">{selectedStateName(result)}</span>.
+            <span className="text-point">{homeStateName(result)}</span>.
           </>
         );
       }
@@ -364,8 +364,8 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
       if (isBattleground(result.homeState)) {
         message = (
           <>
-            Your vote counts more in{" "}
-            <span className="text-point">{homeStateName(result)}</span>.
+            {selectedStateName(result)} is a “swing state” where a small number
+            of votes can swing the election.
           </>
         );
       } else {
