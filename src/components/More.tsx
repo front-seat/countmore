@@ -342,6 +342,7 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
 }) => {
   let message;
   let marginMessage = null;
+  let otherMarginMessage = null;
 
   switch (result.selection) {
     case "home":
@@ -383,25 +384,69 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
   }
 
   const election = ELECTION_2020[selectedState(result)];
+  const electionWinner = winner(election, CANDIDATES_2020);
   const mp = marginPercent(election);
   if (mp < 0.01) {
     marginMessage = (
       <>
-        In 2020,{" "}
-        <span className="font-black">{winner(election, CANDIDATES_2020)}</span>{" "}
-        won {selectedStateName(result)} by a razor-thin margin of{" "}
+        In 2020, <span className="font-black">{electionWinner}</span> won{" "}
+        {selectedStateName(result)} by a razor-thin margin of{" "}
         {formatMargin(election)} votes.
       </>
     );
   } else if (mp < 0.025) {
     marginMessage = (
       <>
-        In 2020,{" "}
-        <span className="font-black">{winner(election, CANDIDATES_2020)}</span>{" "}
-        won {selectedStateName(result)} by a slim margin of{" "}
-        {formatMargin(election)} votes.
+        In 2020, <span className="font-black">{electionWinner}</span> won{" "}
+        {selectedStateName(result)} by a slim margin of {formatMargin(election)}{" "}
+        votes.
       </>
     );
+  }
+
+  // Show the other state's margin if it's close too!
+  if (marginMessage && result.selection === "toss-up") {
+    const otherElection = ELECTION_2020[otherState(result)];
+    const otherElectionWinner = winner(otherElection, CANDIDATES_2020);
+    const otherIsSame = otherElectionWinner === electionWinner;
+    const otherMP = marginPercent(otherElection);
+    const otherMPSimilar =
+      (mp < 0.01 && otherMP < 0.01) ||
+      (mp >= 0.01 && mp < 0.025 && otherMP >= 0.01 && otherMP < 0.025);
+
+    if (otherMP < 0.01) {
+      otherMarginMessage = (
+        <>
+          {otherIsSame ? (
+            <>He also </>
+          ) : (
+            <>
+              On the other hand,{" "}
+              <span className="font-black">{otherElectionWinner}</span>{" "}
+            </>
+          )}
+          won {otherStateName(result)} by a{" "}
+          {otherMPSimilar ? "similarly thin" : "razor-thin"} margin of{" "}
+          {formatMargin(otherElection)} votes.
+        </>
+      );
+    } else if (otherMP < 0.025) {
+      otherMarginMessage = (
+        <>
+          {otherIsSame ? (
+            <>He also </>
+          ) : (
+            <>
+              On the other hand,{" "}
+              <span className="font-black">{otherElectionWinner}</span>{" "}
+            </>
+          )}
+          won {otherStateName(result)} by a{" "}
+          {otherMPSimilar ? "similarly slim" : "slim"} margin of{" "}
+          {formatMargin(otherElection)} votes.
+        </>
+      );
+    }
   }
 
   return (
@@ -411,7 +456,7 @@ const SelectionDetails: React.FC<{ result: StateSelectionResult }> = ({
         <>
           <br />
           <br />
-          {marginMessage}
+          {marginMessage} {otherMarginMessage}
         </>
       )}
     </div>
